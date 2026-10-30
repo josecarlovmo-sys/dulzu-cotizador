@@ -32,7 +32,11 @@ input{font-size:16px}
 [hidden]{display:none !important}
 
 /* Encabezado */
-.top{position:sticky;top:0;z-index:20;background:var(--blanco);padding:calc(8px + env(safe-area-inset-top,0px)) 16px 10px;display:flex;align-items:center;gap:12px;border-bottom:1px solid transparent;transition:border-color .15s}
+.top{position:sticky;top:0;z-index:20;background:var(--blanco);padding:calc(8px + env(safe-area-inset-top,0px)) 16px 10px;border-bottom:1px solid transparent;transition:border-color .15s}
+.top-fila{display:flex;align-items:center;gap:8px}
+.top-fila .icono:first-child{margin-left:-10px;color:var(--vino)}
+.titulo{font-family:var(--serif);font-weight:400;font-size:21px;color:var(--vino);margin:0 0 0 4px;flex:1;line-height:1.2}
+.top .tabs{margin-top:10px}
 .top.sombra{border-bottom-color:var(--linea)}
 .top img{width:48px;height:48px;flex:none;display:block}
 .tabs{flex:1;display:flex;background:var(--crema);border-radius:12px;padding:4px}
@@ -219,6 +223,22 @@ main{padding:4px 16px 0}
 .toast button{border:0;background:none;color:var(--rosa-suave);font-weight:500;padding:6px 4px}
 .teclado .toast{bottom:16px}
 
+/* Inicio */
+.hola{display:flex;align-items:center;gap:12px;margin:calc(22px + env(safe-area-inset-top,0px)) 2px 26px}
+.hola img{width:52px;height:52px;flex:none}
+.hola h1{font-family:var(--serif);font-weight:400;font-size:28px;color:var(--vino);margin:0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding-bottom:24px}
+.card{border:0;text-align:left;border-radius:18px;padding:16px 14px 14px;min-height:132px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;gap:10px;transition:transform .08s}
+.card:active{transform:scale(.97)}
+.card b{display:block;font-weight:500;font-size:18px;line-height:1.2}
+.card small{display:block;font-size:13px;margin-top:2px}
+.card .ic{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.card.f{color:#fff}.card.f .ic{background:rgba(255,255,255,.18)}.card.f small{opacity:.85}
+.card.coral{background:var(--coral)}.card.vino{background:var(--vino)}
+.card.s{background:var(--crema);color:var(--cacao)}.card.s small{color:var(--camel)}.card.s .ic{background:#fff}
+.card.ancha{grid-column:span 2;min-height:76px;flex-direction:row;align-items:center;justify-content:flex-start;gap:12px}
+.card.ancha b{font-size:17px}
+
 /* Clave */
 .clave{max-width:360px;margin:12vh auto 0;padding:24px;text-align:center}
 .clave img{width:64px;height:64px}
@@ -235,15 +255,21 @@ main{padding:4px 16px 0}
 </head>
 <body>
 <div class="app" id="app">
-  <header class="top" id="top">
-    <img id="mono" src="monograma.svg" alt="Dulzú" width="48" height="48">
+  <header class="top" id="top" hidden>
+    <div class="top-fila">
+      <button class="icono" id="backBtn" aria-label="Volver al inicio">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m15 6-6 6 6 6"/></svg>
+      </button>
+      <img id="mono" src="monograma.svg" alt="Dulzú" width="48" height="48">
+      <h1 class="titulo">Cotizar torta</h1>
+      <button class="icono" id="menuBtn" aria-label="Más opciones">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+      </button>
+    </div>
     <div class="tabs" role="tablist">
       <button role="tab" id="tabCotizar" aria-selected="true">Cotizar</button>
       <button role="tab" id="tabHist" aria-selected="false">Historial</button>
     </div>
-    <button class="icono" id="menuBtn" aria-label="Más opciones">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>
-    </button>
   </header>
   <main id="main"></main>
 </div>
