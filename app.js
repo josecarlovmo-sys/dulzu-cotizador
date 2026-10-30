@@ -70,7 +70,7 @@
 
   // ---------- estado ----------
   var S = null;           // cotización en curso
-  var ui = { tab: 'cotizar', vista: 'armar', abiertos: {}, cat: 'todos', q: '', hq: '', hmes: '', hpruebas: false, hn: 30, habierto: null };
+  var ui = { ruta: 'inicio', tab: 'cotizar', vista: 'armar', abiertos: {}, cat: 'todos', q: '', hq: '', hmes: '', hpruebas: false, hn: 30, habierto: null };
   var calc = null;        // último resultado de DZCalc.cotizar
   var HIST = leer(LS.hist, []);
 
@@ -130,6 +130,9 @@
 
   // ---------- render general ----------
   function render() {
+    var enInicio = ui.ruta === 'inicio';
+    $('top').hidden = enInicio;
+    if (enInicio) { $('barra').hidden = true; $('main').innerHTML = htmlInicio(); return; }
     $('tabCotizar').setAttribute('aria-selected', ui.tab === 'cotizar');
     $('tabHist').setAttribute('aria-selected', ui.tab === 'historial');
     if (ui.tab === 'historial') { renderHistorial(); $('barra').hidden = true; return; }
@@ -690,6 +693,7 @@
     var d = Number(b.getAttribute('data-d'));
     if (b.getAttribute('data-d')) { mover(a, d, b); return; }
     switch (a) {
+      case 'ir': irA(v); break;
       case 'conTorta': S.conTorta = !S.conTorta; cambio(true); break;
       case 'elegirSabor':
         abrirHoja('Sabor', CAT.init.sabores.map(function (s) { return { v: s, label: s }; }), i < 0 ? S.sabor : S.pisos[i].sabor, function (val) {
@@ -736,7 +740,7 @@
         var av = [];
         try { S = aplicarPayload(payloadDesdeFila(h, av), av); } catch (err) { av.push('Algo no se pudo cargar: ' + msgError(err)); }
         S.cargada = { cliente: h.cliente, fecha: h.fecha, total: h.total, avisos: av };
-        ui.tab = 'cotizar'; ui.vista = 'armar'; recalcular(); render(); window.scrollTo(0, 0); break; }
+        ui.vista = 'armar'; recalcular(); location.hash = 'cotizar'; break; }
       case 'hHoja': {
         var msg = $('hHojaMsg'); b.disabled = true; b.textContent = 'Preparando…';
         apiGet({ api: 'hojaHist', fila: v }).then(function (j) { location.href = j.data; })
@@ -818,18 +822,57 @@
     S = nuevaCotizacion(); ui.vista = 'armar'; ui.abiertos = {}; ui.q = ''; ui.cat = 'todos'; recalcular(); render(); window.scrollTo(0, 0);
     toast('Nueva cotización');
   });
-  // Pestañas
-  $('tabCotizar').addEventListener('click', function () { ui.tab = 'cotizar'; render(); window.scrollTo(0, 0); });
-  $('tabHist').addEventListener('click', function () { ui.tab = 'historial'; render(); window.scrollTo(0, 0); if (!HIST_FRESCO) cargarHistorial(); });
+  // Navegación: #cotizar y #historial; sin nada es el Inicio. El botón atrás del teléfono funciona solo.
+  function aplicarRuta() {
+    var r = (location.hash.match(/^#(cotizar|historial)\b/) || [])[1];
+    ui.ruta = r ? 'herramienta' : 'inicio';
+    if (r) ui.tab = r;
+    cerrarHoja(); render(); window.scrollTo(0, 0);
+    if (r === 'historial' && !HIST_FRESCO) cargarHistorial();
+  }
+  window.addEventListener('hashchange', function () { if (S) aplicarRuta(); });
+  $('tabCotizar').addEventListener('click', function () { location.hash = 'cotizar'; });
+  $('tabHist').addEventListener('click', function () { location.hash = 'historial'; });
+  $('backBtn').addEventListener('click', function () { location.hash = ''; });
+
+  // ---------- Inicio ----------
+  var ICONOS = {
+    cotizar: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
+    boleta: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></svg>',
+    hoja: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#EA7038" stroke-width="2" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>',
+    carta: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#E66B8C" stroke-width="2" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+    dashboard: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#1F6B3A" stroke-width="2" aria-hidden="true"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>',
+    registro: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#7A1432" stroke-width="2" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg>',
+    hojas: '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6F5036" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10M15 10v10"/></svg>'
+  };
+  function htmlInicio() {
+    var T = [['cotizar', 'f coral', 'Cotizar', 'Torta y bocaditos'], ['boleta', 'f vino', 'Boleta', 'Registrar una venta'],
+      ['hoja', 's', 'Hoja de cotización', 'PDF para el cliente'], ['carta', 's', 'Carta', 'Bocaditos vigentes'],
+      ['dashboard', 's', 'Negocio', 'Ventas y ganancia'], ['registro', 's', 'Registro tributario', 'Compras, IGV y renta']];
+    return '<div class="hola"><img src="monograma.svg" alt="Dulzú" width="52" height="52"><h1>Herramientas</h1></div><div class="grid">' +
+      T.map(function (t) {
+        return '<button type="button" class="card ' + t[1] + '" data-a="ir" data-v="' + t[0] + '"><span class="ic">' + ICONOS[t[0]] + '</span><span><b>' + t[2] + '</b><small>' + t[3] + '</small></span></button>';
+      }).join('') +
+      '<button type="button" class="card s ancha" data-a="ir" data-v="hojas"><span class="ic">' + ICONOS.hojas + '</span><span><b>Hojas de cálculo</b><small>Maestro, costos y registro</small></span></button></div>';
+  }
+  function irA(v) {
+    if (v === 'cotizar') { location.hash = 'cotizar'; return; }
+    var e = (CAT && CAT.enlaces) || {};
+    if (v === 'hojas') {
+      if (!e.hojas) { toast('Cargando enlaces… intenta en unos segundos'); return; }
+      abrirHoja('Hojas de cálculo', e.hojas.map(function (h) { return { v: h.url, label: h.nombre, sub: 'Abrir ↗' }; }), '', function (u) { window.open(u, '_blank', 'noopener'); });
+      return;
+    }
+    if (!e[v]) { toast('Cargando enlaces… intenta en unos segundos'); return; }
+    window.open(e[v], '_blank', 'noopener');
+  }
   // Menú
   $('menuBtn').addEventListener('click', function () {
     var leido = CAT && CAT.leido ? new Date(CAT.leido) : null;
     abrirHoja('Más opciones', [
-      { v: 'hub', label: 'Herramientas Dulzú' },
       { v: 'cat', label: 'Actualizar precios desde la hoja', sub: leido ? 'leídos ' + leido.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }) : '' },
       { v: 'nueva', label: 'Empezar cotización nueva' }
     ], '', function (v) {
-      if (v === 'hub') location.href = HUB;
       if (v === 'nueva') { S = nuevaCotizacion(); ui.vista = 'armar'; ui.tab = 'cotizar'; recalcular(); render(); }
       if (v === 'cat') {
         toast('Actualizando precios…', 9000);
@@ -847,19 +890,18 @@
   // ---------- inicio ----------
   function pantallaClave(error) {
     $('top').hidden = true; $('barra').hidden = true;
-    $('main').innerHTML = '<div class="clave"><img src="' + 'monograma.svg' + '" alt="Dulzú"><h1>Cotizador</h1><p>Escribe la clave para conectar con la hoja de Dulzú.</p>' +
+    $('main').innerHTML = '<div class="clave"><img src="' + 'monograma.svg' + '" alt="Dulzú"><h1>Herramientas</h1><p>Escribe la clave para conectar con las hojas de Dulzú.</p>' +
       '<input class="input" id="claveIn" autocomplete="off" autocapitalize="off" aria-label="Clave"><p class="nota" style="color:var(--vino)">' + esc(error || '') + '</p><button class="btn" id="claveBtn">Entrar</button></div>';
     $('claveBtn').onclick = function () { var v = $('claveIn').value.trim(); if (!v) return; KEY = v; try { localStorage.setItem(LS.key, v); } catch (e) { } arrancar(); };
   }
   function pantallaCarga(txt) { $('main').innerHTML = '<div class="clave"><img src="' + 'monograma.svg' + '" alt="Dulzú"><p style="margin-top:16px">' + esc(txt) + '</p></div>'; }
 
   function listo() {
-    $('top').hidden = false;
     prepararCatalogo();
     S = leer(LS.borrador, null);
     if (!S || !S.id || !S.items) S = nuevaCotizacion();
     if (S.estado === 'guardando') S.estado = COLA.some(function (x) { return x.id === S.id; }) ? 'pendiente' : 'guardada';
-    recalcular(); render();
+    recalcular(); aplicarRuta();
     enviarCola();
   }
   function arrancar() {
