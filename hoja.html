@@ -32,6 +32,16 @@ try{var pf=JSON.parse(localStorage.getItem('dz_hoja_prefill')||'null');if(pf&&pf
 <style>
 .dz-back{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:#7A1432;font:500 15px Jost,system-ui,sans-serif;text-decoration:none;padding:0 4px}
 .sheet td.rh{height:var(--rh,6.7mm)}
+/* pedidos largos: torta + varios tipos de bocaditos en una sola hoja A4 */
+.sheet .compacto h3{margin:2mm 0 1.1mm}
+.sheet .compacto .price{margin-top:1.5mm!important;padding:1.5mm 3.2mm}
+.sheet .compacto thead th{padding:1.1mm 2.2mm}
+.sheet .compacto .cake{padding:2.4mm 3.8mm}
+.sheet .compacto .cake .field{margin-top:1.6mm}
+.sheet .compacto .lined{height:16mm;margin-top:1.6mm}
+.sheet .compacto .bottom{margin-top:2.6mm}
+.sheet .compacto .obs .lined{height:7mm}
+.sheet .compacto header{padding-bottom:3mm}
 </style>
 
 <title>Hoja de cotización Dulzú</title>
@@ -387,8 +397,9 @@ secs+
 '<footer><div class="c"><span><b>@dulzu.pe</b></span><span>WhatsApp <b>939 822 834</b></span></div>'+
 '<span class="thanks">¡Gracias por endulzar tu celebración con nosotros!</span><img src="'+MONO+'" alt=""></footer></div>';
 /* si el pedido es largo, las filas de las tablas se achican hasta que todo entre en la hoja A4 */
-const page=$("sheet").querySelector(".page");let rh=6.7;
-for(let k=0;k<12&&page.scrollHeight>page.clientHeight+1&&rh>4.4;k++){rh-=0.2;page.style.setProperty("--rh",rh.toFixed(1)+"mm")}
+const page=$("sheet").querySelector(".page");const no=()=>page.scrollHeight>page.clientHeight+1;let rh=6.7;
+while(no()&&rh>5.05){rh-=0.2;page.style.setProperty("--rh",rh.toFixed(1)+"mm")}
+if(no()){page.classList.add("compacto");rh=6.7;page.style.setProperty("--rh","6.7mm");while(no()&&rh>4.45){rh-=0.2;page.style.setProperty("--rh",rh.toFixed(1)+"mm")}}
 }
 function update(){const {tb,t}=totals();$("sum-boca").textContent=money(tb);$("sum-total").textContent=money(t);$("sum-igv").textContent=money(t-t/1.18);renderSheet();save();}
 
