@@ -134,8 +134,23 @@
     $('tabHist').setAttribute('aria-selected', ui.tab === 'historial');
     if (ui.tab === 'historial') { renderHistorial(); $('barra').hidden = true; return; }
     $('barra').hidden = false;
+    var pos = guardarScrollFichas();
     $('main').innerHTML = ui.vista === 'resumen' ? htmlResumen() : htmlArmar();
+    restaurarScrollFichas(pos);
     refrescarNumeros();
+  }
+  // Las filas de fichas (tamaño, nivel, categorías) recuerdan hasta dónde se deslizaron
+  function guardarScrollFichas() {
+    var pos = {};
+    Array.prototype.forEach.call(document.querySelectorAll('.chips[data-k]'), function (el) { pos[el.getAttribute('data-k')] = el.scrollLeft; });
+    return pos;
+  }
+  function restaurarScrollFichas(pos) {
+    Array.prototype.forEach.call(document.querySelectorAll('.chips[data-k]'), function (el) {
+      var k = el.getAttribute('data-k');
+      if (pos[k]) el.scrollLeft = pos[k];
+      else { var on = el.querySelector('[aria-pressed=true]'); if (on && on.offsetLeft + on.offsetWidth > el.clientWidth) el.scrollLeft = on.offsetLeft - 16; }
+    });
   }
 
   function refrescarNumeros() {
@@ -216,7 +231,7 @@
     h += '<div class="bloque"><span class="lbl">Forma</span>' + htmlFormas(S.forma, -1) + '</div>';
     h += '<div class="bloque"><span class="lbl">Tamaño</span>' + htmlTamanos(S.forma, S.tamano, -1) + '</div>';
     var nv = nivelSel();
-    h += '<div class="bloque"><span class="lbl">Nivel de diseño</span><div class="chips">' + CAT.niveles.map(function (n) {
+    h += '<div class="bloque"><span class="lbl">Nivel de diseño</span><div class="chips" data-k="nivel">' + CAT.niveles.map(function (n) {
       return '<button type="button" class="chip" data-a="nivel" data-v="' + esc(n.nombre) + '" aria-pressed="' + (n.nombre === S.nivel) + '">' + esc(n.nombre) + '</button>';
     }).join('') + '</div><p class="nota">' + (S.nivel ? esc(S.nivel) + ': ' + (nv.min || 0) + ' min de decoración · prima ' + Math.round((nv.prima || 0) * 100) + ' %' : '') + '</p></div>';
     h += acc('pisos', 'Pisos adicionales', htmlPisos());
@@ -237,7 +252,7 @@
   }
   function htmlTamanos(forma, sel, i) {
     var l = CAT.init.tamanosPorForma[forma] || [];
-    return '<div class="chips">' + (l.length ? l.map(function (t) {
+    return '<div class="chips" data-k="tam' + i + '">' + (l.length ? l.map(function (t) {
       return '<button type="button" class="chip" data-a="tamano" data-i="' + i + '" data-v="' + esc(t) + '" aria-pressed="' + (t === sel) + '">' + esc(t) + '</button>';
     }).join('') : '<span class="nota">No hay tamaños para esta forma.</span>') + '</div>';
   }
@@ -295,7 +310,7 @@
         '<button type="button" class="quitar" data-a="quitarExtra" data-i="' + i + '" aria-label="Quitar">✕</button></div>';
     });
     var usados = S.extras.map(function (x) { return x.concepto; });
-    h += '<div class="chips" style="margin:12px -14px 0">' + SUGERIDOS.filter(function (n) {
+    h += '<div class="chips" data-k="extras" style="margin:12px -14px 0">' + SUGERIDOS.filter(function (n) {
       if (n === 'Caja de torta') return !usados.some(function (u) { return /^Caja de torta/.test(u) || empaqueTipo(u) === 'Caja'; });
       if (n === 'Base') return !usados.some(function (u) { return /^Base/.test(u) || empaqueTipo(u) === 'Base'; });
       return usados.indexOf(n) < 0;
@@ -313,7 +328,7 @@
     if (GRUPOS.pos.length) cats.push(['pos', 'Postres', 'c-pos']);
     var h = '<div class="h3"><h2>Productos</h2><span id="prodCuenta"></span></div>' +
       '<div class="buscar">' + ICON_LUPA + '<input class="input" type="search" id="q" data-in="q" placeholder="Buscar bocaditos, temáticos o postres" value="' + esc(ui.q) + '" autocomplete="off" aria-label="Buscar productos"></div>' +
-      '<div class="chips cats">' + cats.map(function (c) {
+      '<div class="chips cats" data-k="cats">' + cats.map(function (c) {
         return '<button type="button" class="chip" data-a="cat" data-v="' + esc(c[0]) + '" aria-pressed="' + (ui.cat === c[0]) + '">' + (c[2] ? '<i class="petal p ' + c[2] + '"></i>' : '') + esc(c[1]) + '</button>';
       }).join('') + '</div><div id="prodLista">' + htmlListaProductos() + '</div>';
     return h;
@@ -385,7 +400,7 @@
     var gT = r.soloBocaditos ? 0 : (r.gananciaFamilia || 0), gB = b.gananciaFamilia || 0, gM = t.gananciaFamilia || 0, gP = po.gananciaFamilia || 0;
     var tot = gT + gB + gM + gP;
     function dl(a, v, cls) { return '<div class="dl' + (cls ? ' ' + cls : '') + '"><span>' + a + '</span><span>' + fmt(v) + '</span></div>'; }
-    h += '<div class="fam"><div class="x"><span>Ganancia familia</span><strong>' + fmt(tot) + '</strong></div><small>Utilidad neta (después de renta) + mano de obra de Katherine' + (r.totalPedido > 0 ? ' · ' + Math.round(tot / r.totalPedido * 100) + ' %' : '') + '</small>' +
+    h += '<div class="fam"><div class="x"><span>Ganancia por pedido</span><strong>' + fmt(tot) + '</strong></div><small>Utilidad neta (después de renta) + mano de obra de Katherine' + (r.totalPedido > 0 ? ' · ' + Math.round(tot / r.totalPedido * 100) + ' %' : '') + '</small>' +
       (!r.soloBocaditos ? dl('Tortas', gT) : '') + (b.lineas.length ? dl('Bocaditos', gB) : '') + (t.lineas.length ? dl('Bocaditos temáticos', gM) : '') + (po.lineas.length ? dl('Postres', gP) : '') + '</div>';
     var pct = function (a, base) { return base > 0 ? Math.round(a / base * 100) + '%' : '—'; };
     var fila = function (lbl, v, cls) { return '<div class="pc-r' + (cls ? ' ' + cls : '') + '"><span>' + lbl + '</span><span>' + v + '</span></div>'; };
@@ -394,7 +409,6 @@
       x += '<div class="pc-cap">De lo que cobras</div>';
       o.filas.forEach(function (f) { x += fila(f[0], '− ' + fmt(f[1]) + ' <i>' + pct(f[1], o.precio) + '</i>'); });
       x += fila('Utilidad neta del negocio', fmt(o.neta) + ' <i>' + pct(o.neta, o.precio) + '</i>', 'tot2');
-      x += '<div class="pc-fam"><span>Ganancia familia<small>utilidad neta + mano de obra</small></span><b>' + fmt(o.fam) + ' <i style="font-style:normal;font-size:12px">' + pct(o.fam, o.precio) + '</i></b></div>';
       if (o.extra) x += '<div class="pc-nota">' + o.extra + '</div>';
       return x + '</div>';
     };
@@ -519,11 +533,13 @@
   function renderHistorial() {
     var meses = []; HIST.forEach(function (h) { if (h.mes && meses.indexOf(h.mes) < 0) meses.push(h.mes); });
     var h = '<div class="buscar" style="margin-top:6px">' + ICON_LUPA + '<input class="input" type="search" data-in="hq" placeholder="Buscar cliente, sabor o producto" value="' + esc(ui.hq) + '" autocomplete="off" aria-label="Buscar en el historial"></div>' +
-      '<div class="chips cats"><button type="button" class="chip" data-a="hmes" data-v="" aria-pressed="' + (!ui.hmes) + '">Todos</button>' +
+      '<div class="chips cats" data-k="hmes"><button type="button" class="chip" data-a="hmes" data-v="" aria-pressed="' + (!ui.hmes) + '">Todos</button>' +
       meses.slice(0, 12).map(function (k) { return '<button type="button" class="chip" data-a="hmes" data-v="' + k + '" aria-pressed="' + (ui.hmes === k) + '">' + esc(nombreMes(k)) + '</button>'; }).join('') +
       '<button type="button" class="chip" data-a="hpruebas" aria-pressed="' + ui.hpruebas + '">Mostrar pruebas</button></div>' +
       '<p class="nota" id="histEstado">' + (HIST_FRESCO ? '' : 'Actualizando…') + '</p><div id="histLista">' + htmlListaH() + '</div>';
+    var pos = guardarScrollFichas();
     $('main').innerHTML = h;
+    restaurarScrollFichas(pos);
   }
   function htmlListaH() {
     var L = filtradosH(), vis = L.slice(0, ui.hn);
@@ -556,7 +572,7 @@
       d += '<div class="pc-cap">' + x[0] + '</div>' + ls.map(function (l) { return f(esc(l.nombre) + ' · ' + l.unidades + ' u.', fmt(l.total)); }).join('');
     });
     d += f('Total del pedido (IGV incluido)', fmt(h.total), 'tot2');
-    if (h.fam > 0) d += '<div class="pc-fam"><span>Ganancia familia</span><b>' + fmt(h.fam) + (h.total > 0 ? ' · ' + Math.round(h.fam / h.total * 100) + '%' : '') + '</b></div>';
+    if (h.fam > 0) d += '<div class="pc-fam"><span>Ganancia por pedido</span><b>' + fmt(h.fam) + (h.total > 0 ? ' · ' + Math.round(h.fam / h.total * 100) + '%' : '') + '</b></div>';
     d += '<div class="acts"><button type="button" class="btn sec2" data-a="hCargar" data-v="' + h.fila + '">Volver a cargar</button>' +
       '<button type="button" class="btn sec2" data-a="hHoja" data-v="' + h.fila + '">Hoja para el cliente</button></div><p class="nota" id="hHojaMsg"></p></div>';
     return d;
