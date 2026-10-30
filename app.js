@@ -847,11 +847,11 @@
   // ---------- inicio ----------
   function pantallaClave(error) {
     $('top').hidden = true; $('barra').hidden = true;
-    $('main').innerHTML = '<div class="clave"><img src="' + (window.DZ_MARCA ? DZ_MARCA.mono : '') + '" alt="Dulzú"><h1>Cotizador</h1><p>Escribe la clave para conectar con la hoja de Dulzú.</p>' +
+    $('main').innerHTML = '<div class="clave"><img src="' + 'monograma.svg' + '" alt="Dulzú"><h1>Cotizador</h1><p>Escribe la clave para conectar con la hoja de Dulzú.</p>' +
       '<input class="input" id="claveIn" autocomplete="off" autocapitalize="off" aria-label="Clave"><p class="nota" style="color:var(--vino)">' + esc(error || '') + '</p><button class="btn" id="claveBtn">Entrar</button></div>';
     $('claveBtn').onclick = function () { var v = $('claveIn').value.trim(); if (!v) return; KEY = v; try { localStorage.setItem(LS.key, v); } catch (e) { } arrancar(); };
   }
-  function pantallaCarga(txt) { $('main').innerHTML = '<div class="clave"><img src="' + (window.DZ_MARCA ? DZ_MARCA.mono : '') + '" alt="Dulzú"><p style="margin-top:16px">' + esc(txt) + '</p></div>'; }
+  function pantallaCarga(txt) { $('main').innerHTML = '<div class="clave"><img src="' + 'monograma.svg' + '" alt="Dulzú"><p style="margin-top:16px">' + esc(txt) + '</p></div>'; }
 
   function listo() {
     $('top').hidden = false;
@@ -863,7 +863,6 @@
     enviarCola();
   }
   function arrancar() {
-    if (window.DZ_MARCA) $('mono').src = DZ_MARCA.mono;
     if (!KEY) { pantallaClave(''); return; }
     if (CAT) {
       listo();
