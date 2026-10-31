@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Negocio · Dulzú</title>
+<style>.dz-back{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:#7A1432;font:500 15px Jost,system-ui,sans-serif;text-decoration:none;padding:0 4px}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Jost:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#FBF4E8;--card:#FFFFFF;--ink:#3F2B26;--muted:#6F5036;--soft:#8C7563;--line:#EADBCF;--vino:#7A1432;--coral:#D8334F;--rosa:#F7C6C7;--good:#2E6B3F;--bad:#B4233F;--badbg:#FBE4E8;--warnbg:#FCEBD4;--warn:#8A4B06;
+--display:"Fraunces",Georgia,serif;--body:"Jost","Segoe UI",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);-webkit-tap-highlight-color:transparent}
+.wrap{max-width:860px;margin:0 auto;padding:18px 16px 40px}
+h1{font-family:var(--display);font-weight:400;font-size:27px;margin:0;color:var(--vino)}
+.sub{margin:2px 0 0;color:var(--muted);font-size:14px}
+.bar{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 0;margin-top:8px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--muted)}
+.bar select{font:500 16px var(--body);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+h2{font-family:var(--display);font-weight:400;font-size:19px;margin:22px 0 10px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;min-width:0}
+.tile .l{font-size:12.5px;color:var(--muted);line-height:1.25}
+.tile .v{font-family:var(--display);font-size:24px;line-height:1.15;margin-top:4px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.tile .d{font-size:12.5px;margin-top:3px;color:var(--soft)}
+.d.up{color:var(--good)!important}.d.dn{color:var(--bad)!important}
+.tile.hero{grid-column:1/-1;background:var(--vino);border-color:var(--vino);color:#fff}
+.tile.hero .l,.tile.hero .d,.tile.hero .d.up,.tile.hero .d.dn{color:#F7C6C7!important}.tile.hero .v{font-size:34px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.note{background:var(--warnbg);color:var(--warn);border-radius:12px;padding:10px 12px;font-size:13.5px;margin-top:12px;line-height:1.4}
+.note.info{background:#F3E7DC;color:var(--muted)}
+.err{background:var(--badbg);color:var(--bad)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{padding:7px 4px;border-bottom:1px dashed var(--line);text-align:left;vertical-align:top}
+th{font-size:11.5px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.tot td{font-weight:600;border-bottom:none;border-top:1px solid var(--muted)}
+tr.big td{font-family:var(--display);font-size:18px;color:var(--vino)}
+tr.sel td{background:#FBF0F2}
+.small{font-size:12.5px;color:var(--soft)}
+.scroll{overflow-x:auto}
+.legend{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-bottom:6px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+svg{display:block;width:100%;height:auto}
+.overlay{position:fixed;inset:0;z-index:99;background:rgba(251,244,232,.94);display:flex;align-items:center;justify-content:center}
+.overlay div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 26px;font-weight:600;color:var(--vino)}
+footer{margin-top:26px;font-size:12.5px;color:var(--muted);text-align:center;line-height:1.5}
+</style></head><body>
+<div class="overlay" id="ov"><div>Cargando el dashboard…</div></div>
+<div class="wrap">
+<a class="dz-back" href="./">&#8249; Herramientas</a>
+<h1>Dashboard del negocio</h1>
+<p class="sub">Ventas, compras, impuestos y utilidad de cada mes.</p>
+<div class="bar"><label for="mes">Mes</label><select id="mes"></select></div>
+<div id="errs"></div>
+<section id="main"></section>
+<footer id="foot"></footer>
+</div>
+<script>
+var D = null, MES = '';
+var MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','setiembre','octubre','noviembre','diciembre'];
+var MC = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Set','Oct','Nov','Dic'];
+var TIPOS = [['torta','Tortas'],['boc','Bocaditos y kekes'],['tem','Temáticos'],['otro','Sin detalle'],['del','Delivery']];
+function cap(s){ return s.replace(/^./, function(c){ return c.toUpperCase(); }); }
+function nomMes(p){ var a = p.split('-'); return MESES[+a[1]-1] + ' ' + a[0]; }
+function S(n){ if (n === null || n === undefined || isNaN(n)) return '—'; return (n < -0.004 ? '−' : '') + 'S/ ' + Math.abs(n).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function S0(n){ return (n < -0.5 ? '−' : '') + 'S/ ' + Math.round(Math.abs(n)).toLocaleString('es-PE'); }
+function P(n){ return Math.round(n*100) + ' %'; }
+function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function prev(p){ var a = p.split('-'), y = +a[0], m = +a[1] - 1; if (m === 0) { m = 12; y--; } return y + '-' + (m < 10 ? '0' : '') + m; }
+function tile(l, v, d, cls){ return '<div class="tile' + (cls ? ' ' + cls : '') + '"><div class="l">' + l + '</div><div class="v">' + v + '</div>' + (d || '') + '</div>'; }
+function delta(cur, ant, invert){
+  if (ant === null || ant === undefined) return '';
+  var d = cur - ant; if (Math.abs(d) < 0.5) return '<div class="d">igual que el mes anterior</div>';
+  var good = invert ? d < 0 : d > 0;
+  return '<div class="d ' + (good ? 'up' : 'dn') + '">' + (d > 0 ? '▲ ' : '▼ ') + S0(Math.abs(d)) + ' vs. mes anterior</div>';
+}
+function grafico(ks, sel){
+  var W = 640, H = 300, pl = 6, pr = 6, pt = 34, pb = 38;
+  var max = Math.max.apply(null, ks.map(function(k){ return D.meses[k].ventas; }).concat([1]));
+  var y = function(v){ return pt + (1 - Math.max(v,0) / max) * (H - pt - pb); };
+  var bw = (W - pl - pr) / ks.length, g = '<line x1="' + pl + '" x2="' + (W-pr) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke="#CDBBA9"/>';
+  ks.forEach(function(k, i){
+    var m = D.meses[k], x0 = pl + i * bw, w = Math.min(44, bw * 0.32), on = k === sel;
+    var xa = x0 + bw/2 - w - 1, xb = x0 + bw/2 + 1;
+    g += '<rect x="' + xa + '" y="' + y(m.ventas) + '" width="' + w + '" height="' + (y(0) - y(m.ventas)) + '" rx="3" fill="' + (on ? '#7A1432' : '#C99AA6') + '"><title>Ventas ' + S(m.ventas) + '</title></rect>';
+    g += '<rect x="' + xb + '" y="' + y(m.utilidad) + '" width="' + w + '" height="' + (y(0) - y(m.utilidad)) + '" rx="3" fill="' + (on ? '#2E6B3F' : '#9CC3A6') + '"><title>Utilidad ' + S(m.utilidad) + '</title></rect>';
+    g += '<text x="' + (x0 + bw/2) + '" y="' + (H - 10) + '" text-anchor="middle" font-size="21" fill="' + (on ? '#3F2B26' : '#8C7563') + '" font-weight="' + (on ? 600 : 400) + '">' + MC[+k.split('-')[1]-1] + '</text>';
+    if (on) g += '<text x="' + (x0 + bw/2) + '" y="' + (y(m.ventas) - 9) + '" text-anchor="middle" font-size="21" font-weight="600" fill="#3F2B26">' + S0(m.ventas) + '</text>';
+  });
+  return '<div class="card"><div class="legend"><span><i style="background:#7A1432"></i>Ventas (con IGV)</span><span><i style="background:#2E6B3F"></i>Utilidad aprox.</span></div><svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Ventas y utilidad por mes">' + g + '</svg></div>';
+}
+function render(){
+  var p = MES, m = D.meses[p], a = D.meses[prev(p)] || null, el = document.getElementById('main');
+  if (!m) { el.innerHTML = '<div class="note">No hay datos para este mes.</div>'; return; }
+  var h = '<h2>' + cap(nomMes(p)) + '</h2><div class="tiles">';
+  h += tile('Utilidad generada (aprox.)', S(m.utilidad), (m.ventas ? '<div class="d">' + P(m.utilidad / m.ventas) + ' de lo vendido · margen + mano de obra de Katherine</div>' : '') + delta(m.utilidad, a && a.utilidad), 'hero');
+  h += tile('Ventas (con IGV)', S(m.ventas), '<div class="d">' + m.nV + (m.nV === 1 ? ' boleta' : ' boletas') + ' · sin IGV ' + S(m.netos) + '</div>' + delta(m.ventas, a && a.ventas));
+  h += tile('Compras (con IGV)', S(m.compras), '<div class="d">' + m.nC + (m.nC === 1 ? ' factura' : ' comprobantes') + '</div>' + delta(m.compras, a && a.compras, true));
+  h += tile('Impuestos a pagar', S(m.impuestos), '<div class="d">IGV ' + S0(m.igvPagar) + ' + renta ' + S(m.renta) + '</div>');
+  h += tile('Dinero que quedó', S(m.caja), '<div class="d">ventas − compras − impuestos</div>');
+  h += '</div>';
+
+  // Utilidad por tipo
+  h += '<h2>Utilidad por tipo de producto</h2><div class="card scroll"><table><tr><th>Tipo</th><th class="r">Vendido</th><th class="r">% gan.</th><th class="r">Utilidad</th></tr>';
+  TIPOS.forEach(function(t){ var c = m.cat[t[0]]; if (!c || Math.abs(c.v) < 0.005) return;
+    h += '<tr><td>' + t[1] + '</td><td class="r">' + S(c.v) + '</td><td class="r">' + P(D.pct[t[0]] || 0) + '</td><td class="r">' + S(c.g) + '</td></tr>'; });
+  h += '<tr class="tot big"><td>Total</td><td class="r">' + S(m.ventas) + '</td><td class="r"></td><td class="r">' + S(m.utilidad) + '</td></tr></table>';
+  h += '<div class="small" style="margin-top:8px">La utilidad ya descuenta insumos, empaques, gastos fijos, IGV y renta. Incluye el pago de Katherine (mano de obra). Si una boleta tiene varios productos, su total se reparte en partes iguales entre ellos.</div></div>';
+
+  // Impuestos
+  h += '<h2>Impuestos del mes</h2><div class="card"><table>';
+  h += '<tr><td>IGV cobrado en ventas</td><td class="r">' + S(m.igvV) + '</td></tr>';
+  h += '<tr><td>− IGV pagado en compras (crédito fiscal)</td><td class="r">' + S(m.igvC) + '</td></tr>';
+  h += '<tr class="tot"><td>IGV a pagar</td><td class="r">' + S0(m.igvPagar) + '</td></tr>';
+  h += '<tr><td>Renta RER ' + (Math.round(D.tasaRenta*1000)/10) + ' % de ' + S(m.netos) + '</td><td class="r">' + S(m.renta) + '</td></tr>';
+  h += '<tr class="tot big"><td>Total a pagar a SUNAT</td><td class="r">' + S(m.impuestos) + '</td></tr></table>';
+  if (m.saldoSig > 0) h += '<div class="small" style="margin-top:6px">Saldo a favor de IGV para el mes siguiente: ' + S(m.saldoSig) + '</div>';
+  if (m.sinCred > 0) h += '<div class="small" style="margin-top:6px">Compras sin crédito fiscal: ' + S(m.sinCred) + '</div>';
+  h += '</div>';
+
+  if (m.compras > m.ventas - m.utilidad - m.impuestos + 1 && m.ventas > 0) h += '<div class="note info">Este mes compraste más insumos de los que usaron las ventas (stock para pedidos siguientes o compras no del negocio). Por eso el dinero que quedó (' + S0(m.caja) + ') es menor que la utilidad (' + S0(m.utilidad) + ').</div>';
+
+  // 12 meses
+  var ks = Object.keys(D.meses).filter(function(k){ return k <= D.hoy; }).sort().slice(-12);
+  h += '<h2>Mes a mes</h2>' + grafico(ks, p);
+  h += '<div class="card scroll" style="margin-top:10px"><table><tr><th>Mes</th><th class="r">Ventas</th><th class="r">Compras</th><th class="r">Impuestos</th><th class="r">Utilidad</th></tr>';
+  var T = {v:0,c:0,i:0,u:0};
+  ks.slice().reverse().forEach(function(k){ var x = D.meses[k]; T.v += x.ventas; T.c += x.compras; T.i += x.impuestos; T.u += x.utilidad;
+    h += '<tr' + (k === p ? ' class="sel"' : '') + '><td style="white-space:nowrap">' + MC[+k.split('-')[1]-1] + ' ' + k.slice(2,4) + '</td><td class="r">' + S0(x.ventas) + '</td><td class="r">' + S0(x.compras) + '</td><td class="r">' + S0(x.impuestos) + '</td><td class="r">' + S0(x.utilidad) + '</td></tr>'; });
+  h += '<tr class="tot"><td>Total</td><td class="r">' + S0(T.v) + '</td><td class="r">' + S0(T.c) + '</td><td class="r">' + S0(T.i) + '</td><td class="r">' + S0(T.u) + '</td></tr></table></div>';
+
+  // últimas ventas
+  if (m.ultimas.length) {
+    h += '<h2>Últimas ventas del mes</h2><div class="card"><table>';
+    m.ultimas.forEach(function(u){ h += '<tr><td style="white-space:nowrap">' + esc(u.f) + '</td><td>' + esc(u.c || '(sin nombre)') + (u.d ? '<div class="small">' + esc(u.d) + '</div>' : '') + '</td><td class="r">' + S(u.t) + '</td></tr>'; });
+    h += '</table></div>';
+  }
+  el.innerHTML = h;
+}
+function pintar(d){
+  D = d; document.getElementById('ov').style.display = 'none';
+  if (d.errores && d.errores.length) document.getElementById('errs').innerHTML = d.errores.map(function(x){ return '<div class="note err">No pude leer: ' + esc(x) + '</div>'; }).join('');
+  var ks = Object.keys(d.meses).filter(function(k){ return k <= d.hoy; }).sort().reverse(), sel = document.getElementById('mes');
+  ks.forEach(function(k){ var o = document.createElement('option'); o.value = k; o.textContent = cap(nomMes(k)); sel.appendChild(o); });
+  MES = ks.indexOf(d.hoy) >= 0 ? d.hoy : (ks[0] || d.hoy); sel.value = MES;
+  sel.addEventListener('change', function(){ MES = sel.value; render(); });
+  document.getElementById('foot').innerHTML = 'Actualizado ' + d.generado + ' · Fuente: Registro tributario (Ventas, Compras, Resumen mensual).<br>Los % de ganancia se cambian en Registro tributario › Config (filas 16 a 19).';
+  try { render(); } catch (e) { document.getElementById('main').innerHTML = '<div class="note err">' + esc(e.message) + '</div>'; }
+}
+/* App en GitHub (31/10/2026): muestra al instante el último dashboard guardado en el teléfono y lo actualiza desde el Registro */
+(function(){
+var API='https://script.google.com/macros/s/AKfycbwIDp3-xUtD7GFfvjS-g6oCFJ8HVKtSfjLjXT5j_96P2qnaOL4rvSRajMWdTSrYWAlg/exec';
+var KEY='';try{KEY=localStorage.getItem('dzk')||''}catch(e){}
+var cache=null;try{cache=JSON.parse(localStorage.getItem('dz_dash')||'null')}catch(e){}
+function limpiar(){var s=document.getElementById('mes');var n=s.cloneNode(false);s.parentNode.replaceChild(n,s);document.getElementById('errs').innerHTML=''}
+function pie(t){var f=document.getElementById('foot');if(f)f.innerHTML=t+f.innerHTML.replace(/^(Actualizando…|Sin conexión[^·]*)\s·\s/,'')}
+if(cache){pintar(cache);pie('Actualizando… · ')}
+fetch(API+'?api=dashboard&k='+encodeURIComponent(KEY)).then(function(r){return r.json()}).then(function(j){
+if(!j.ok)throw new Error(j.error||'Error del servidor');
+var mes=MES;limpiar();pintar(j.data);
+if(cache&&mes&&j.data.meses[mes]){MES=mes;document.getElementById('mes').value=mes;render()}
+try{localStorage.setItem('dz_dash',JSON.stringify(j.data))}catch(e){}
+}).catch(function(err){
+if(cache)pie('Sin conexión: mostrando los datos guardados · ');
+else document.getElementById('ov').innerHTML='<div>No se pudieron cargar los datos: '+esc(err.message||err)+'</div>';
+});
+})();
+</script>
+</body></html>
