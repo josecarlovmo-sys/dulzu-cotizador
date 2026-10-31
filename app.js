@@ -899,6 +899,7 @@
     if (v === 'boleta') { location.href = 'boleta.html'; return; }
     if (v === 'carta') { location.href = 'carta.html'; return; }
     if (v === 'dashboard') { location.href = 'dashboard.html'; return; }
+    if (v === 'registro') { location.href = 'registro.html'; return; }
     var e = (CAT && CAT.enlaces) || {};
     if (v === 'hojas') {
       if (!e.hojas) { toast('Cargando enlaces… intenta en unos segundos'); return; }
