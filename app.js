@@ -391,7 +391,7 @@
     });
     h += '<div class="tot"><span>Total</span><strong>' + fmt(r.totalPedido) + '</strong></div><div class="igv">IGV incluido</div></div>';
     h += '<div class="acts"><button type="button" class="btn sec2" data-a="copiar">Copiar texto</button>' +
-      (S.hojaUrl ? '<a class="btn sec2" href="' + esc(S.hojaUrl) + '">Hoja para el cliente</a>' : '<button type="button" class="btn sec2" data-a="hojaAviso"' + (S.estado === 'guardando' ? ' disabled' : '') + '>Hoja para el cliente</button>') + '</div>';
+      '<button type="button" class="btn sec2" data-a="hojaCliente">Hoja para el cliente</button></div>';
     h += htmlNegocio();
     return h;
   }
@@ -729,7 +729,7 @@
         break; }
       case 'editar': ui.vista = 'armar'; render(); window.scrollTo(0, 0); break;
       case 'copiar': copiarTexto(textoCliente()); break;
-      case 'hojaAviso': toast(S.estado === 'nueva' ? 'Primero guarda la cotización' : 'La hoja estará lista cuando se guarde'); break;
+      case 'hojaCliente': abrirHojaCliente(datosHojaCotizacion()); break;
       case 'cerrarCargada': S.cargada = null; guardarLS(LS.borrador, S); render(); break;
       case 'hmes': ui.hmes = v; ui.hn = 30; renderHistorial(); break;
       case 'hpruebas': ui.hpruebas = !ui.hpruebas; ui.hn = 30; renderHistorial(); break;
@@ -742,9 +742,8 @@
         S.cargada = { cliente: h.cliente, fecha: h.fecha, total: h.total, avisos: av };
         ui.vista = 'armar'; recalcular(); location.hash = 'cotizar'; break; }
       case 'hHoja': {
-        var msg = $('hHojaMsg'); b.disabled = true; b.textContent = 'Preparando…';
-        apiGet({ api: 'hojaHist', fila: v }).then(function (j) { location.href = j.data; })
-          .catch(function (err) { b.disabled = false; b.textContent = 'Hoja para el cliente'; if (msg) msg.textContent = 'No se pudo preparar la hoja: ' + msgError(err); });
+        var hh = HIST.filter(function (x) { return x.fila === Number(v); })[0];
+        if (hh) abrirHojaCliente(datosHojaHistorial(hh));
         break; }
     }
   });
@@ -855,8 +854,48 @@
       }).join('') +
       '<button type="button" class="card s ancha" data-a="ir" data-v="hojas"><span class="ic">' + ICONOS.hojas + '</span><span><b>Hojas de cálculo</b><small>Maestro, costos y registro</small></span></button></div>';
   }
+  // ---------- Hoja de cotización para el cliente (hoja.html, dentro de la app) ----------
+  function unicos(a) { return a.filter(function (x, i) { return x && a.indexOf(x) === i; }); }
+  function abrirHojaCliente(d) {
+    guardarLS('dz_hoja_prefill', { id: uid(), d: d });
+    location.href = 'hoja.html';
+  }
+  function datosHojaCotizacion() {
+    var r = calc.r, d = { nombre: S.cliente || '', bocas: [] };
+    if (S.conTorta) {
+      var pisos = [{ sabor: S.sabor, forma: S.forma, tamano: S.tamano }].concat(S.pisos);
+      var forma = pisos.length > 1 ? pisos.length + ' pisos · ' + pisos.map(function (x) { return x.forma.toLowerCase() + ' ' + x.tamano; }).join(' + ')
+        : '1 piso · ' + S.forma.toLowerCase() + ' ' + S.tamano;
+      d.pisos = (S.cantidad > 1 ? S.cantidad + ' tortas · ' : '') + forma;
+      d.sabor = unicos(pisos.map(function (x) { return x.sabor; })).join(' / ');
+      d.relleno = unicos(S.rellenos.filter(function (x) { return x.ingrediente && Number(x.cantidad) > 0; }).map(function (x) { return x.ingrediente; })).join(', ');
+      d.precioTorta = (r.precioRedondeado || 0).toFixed(2);
+    }
+    [['bocaditos', 'boc'], ['tematicos', 'tem'], ['postres', 'pos']].forEach(function (g) {
+      ((r[g[0]] && r[g[0]].lineas) || []).forEach(function (l) { d.bocas.push({ n: l.nombre, c: String(l.unidades), p: l.total.toFixed(2), g: g[1] }); });
+    });
+    return d;
+  }
+  function datosHojaHistorial(h) {
+    var d = { nombre: h.cliente || '', bocas: [] };
+    if (!h.solo) {
+      var multi = /\(\d+ pisos\)/.test(h.tamano);
+      var forma = multi ? (h.tamano.match(/\((\d+ pisos)\)/)[1] + ' · ' + h.forma.toLowerCase() + ' ' + h.tamano.replace(/\s*\(\d+ pisos\)\s*$/, ''))
+        : '1 piso · ' + String(h.forma || '').toLowerCase() + ' ' + (h.tamano || '');
+      d.pisos = (h.cantidad > 1 ? h.cantidad + ' tortas · ' : '') + forma;
+      d.sabor = h.sabor || '';
+      d.relleno = unicos(String(h.relleno || '').split('; ').map(function (s) { var m = s.trim().match(/^(.*) \(([\d.]+)g\)/); return m ? m[1] : ''; })).join(', ');
+      d.precioTorta = (Number(h.precioTorta) || 0).toFixed(2);
+    }
+    [['bocDet', 'boc'], ['temDet', 'tem'], ['posDet', 'pos']].forEach(function (g) {
+      lineasH(h[g[0]]).forEach(function (l) { d.bocas.push({ n: l.nombre, c: String(l.unidades), p: l.total.toFixed(2), g: g[1] }); });
+    });
+    return d;
+  }
+
   function irA(v) {
     if (v === 'cotizar') { location.hash = 'cotizar'; return; }
+    if (v === 'hoja') { location.href = 'hoja.html'; return; }
     var e = (CAT && CAT.enlaces) || {};
     if (v === 'hojas') {
       if (!e.hojas) { toast('Cargando enlaces… intenta en unos segundos'); return; }
