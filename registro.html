@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Registro tributario · Dulzú</title>
+<link rel="icon" href="monograma.svg" type="image/svg+xml">
+<style>.dz-back{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:#7A1432;font:500 15px Jost,system-ui,sans-serif;text-decoration:none;padding:0 4px}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FBF4E8;--card:#fff;--ink:#3F2B26;--muted:#6F5036;--line:#EADBCF;--vino:#7A1432;--coral:#D8334F;--rosa:#F7C6C7;--ok:#2E6B3F;--okbg:#E4F1E6;--warn:#8A4B06;--warnbg:#FCEBD4}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 Jost,system-ui,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:16px 16px 40px}
+h1{font:400 24px/1.15 Fraunces,Georgia,serif;margin:0 0 2px}
+.sub{color:var(--muted);margin:0 0 14px;font-size:14px}
+.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tabs button{flex:1 1 auto;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 12px;font:500 14px Jost,sans-serif;color:var(--ink);cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--vino);border-color:var(--vino);color:#fff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.card h2{font:400 18px Fraunces,serif;margin:0 0 10px}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.kpi{background:var(--bg);border-radius:10px;padding:10px 12px}
+.kpi small{display:block;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.kpi b{font:500 20px Fraunces,serif;font-variant-numeric:tabular-nums}
+.kpi.big{grid-column:1/-1;background:var(--vino);color:#fff}
+.kpi.big small{color:var(--rosa)} .kpi.big b{font-size:28px}
+.mes{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.mes select{flex:1}
+table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{padding:6px 6px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+th{font-weight:500;color:var(--muted);font-size:12px}
+.scroll{overflow-x:auto}
+label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+input,select,textarea{font:15px Jost,sans-serif;color:var(--ink);background:#FFFDF9;border:1px solid var(--line);border-radius:9px;padding:9px 11px;width:100%;text-transform:none;letter-spacing:0}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:10px}
+.radios{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.radios label{flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:14.5px;color:var(--ink);font-weight:400}
+.radios input{width:auto}
+.btn{border:0;background:var(--vino);color:#fff;border-radius:999px;padding:11px 18px;font:500 15px Jost,sans-serif;cursor:pointer}
+.btn.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5}
+.calc{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:14px;margin-bottom:12px;font-variant-numeric:tabular-nums}
+.msg{border-radius:10px;padding:9px 12px;margin-top:10px;font-size:14px}
+.msg.ok{background:var(--okbg);color:var(--ok)} .msg.err{background:var(--warnbg);color:var(--warn)}
+.hint{color:var(--muted);font-size:13px;margin:6px 0 0}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;cursor:pointer;background:#FFFDF9}
+.drop b{font:400 18px Fraunces,serif;display:block}
+[hidden]{display:none!important}
+#items input,#items select{width:100%;min-width:0;padding:6px 8px;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;background:#fff}
+#items td{vertical-align:top;padding:4px}
+#items .x{border:0;background:none;font-size:20px;line-height:1;color:var(--muted);cursor:pointer;padding:6px}
+.scan{display:flex;align-items:center;gap:14px;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px}.scan-doc{position:relative;width:44px;height:56px;flex:none;background:#fff;border:2px solid var(--vino);border-radius:6px;overflow:hidden}.scan-doc i{display:block;height:3px;border-radius:2px;background:var(--line);margin:7px 6px 0}.scan-doc i:nth-child(2){width:60%}.scan-doc i:nth-child(4){width:70%}.scan-doc b{position:absolute;left:0;right:0;height:3px;background:var(--coral);box-shadow:0 0 8px 2px var(--coral);animation:scanmov 1.6s ease-in-out infinite}@keyframes scanmov{0%{top:0}50%{top:calc(100% - 3px)}100%{top:0}}.scan-t{position:relative;flex:1;min-height:40px;font-weight:500}.scan-t span{position:absolute;left:0;top:0;opacity:0;animation:scantxt 9s infinite}.scan-t span:nth-child(2){animation-delay:3s}.scan-t span:nth-child(3){animation-delay:6s}@keyframes scantxt{0%{opacity:0;transform:translateY(4px)}5%,30%{opacity:1;transform:none}35%,100%{opacity:0}}
+.scan-doc.qr{background:conic-gradient(var(--vino) 25%,#fff 0 50%,var(--vino) 0 75%,#fff 0) 0 0/11px 11px}.scan-t span.on{opacity:1;animation:none}
+.chk{display:flex;gap:12px;align-items:center;border-radius:12px;padding:12px 14px;margin-top:10px;font-size:15px;line-height:1.35}.chk.ok{background:var(--ok);color:#fff;animation:chkpop .5s ease}.chk.bad{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn)}.chk-i{flex:none;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px;background:rgba(255,255,255,.28)}.chk.bad .chk-i{background:var(--warn);color:#fff}@keyframes chkpop{0%{transform:scale(.95);opacity:.4}60%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="dz-back" href="./">&#8249; Herramientas</a>
+  <h1>Registro tributario Dulzú</h1>
+  <p class="sub">Ventas, compras, IGV y renta RER 1.5 % mes a mes.</p>
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-t="resumen">Resumen</button>
+    <button role="tab" aria-selected="false" data-t="compra">Registrar compra</button>
+    <button role="tab" aria-selected="false" data-t="xml">Subir XML</button>
+  </div>
+
+  <!-- RESUMEN -->
+  <section id="t-resumen">
+    <div class="card">
+      <div class="mes"><select id="selMes" aria-label="Mes"></select><button class="btn sec" id="recargar">Actualizar</button></div>
+      <div class="kpis" id="kpis"><p class="hint">Cargando…</p></div>
+      <p class="hint" id="nota"></p>
+    </div>
+    <div class="card">
+      <h2>Últimas compras</h2>
+      <div class="scroll"><table id="ult"><tbody><tr><td>Cargando…</td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- COMPRA MANUAL -->
+  <section id="t-compra" hidden>
+    <div class="card">
+      <h2>Compra de insumos</h2>
+      <div class="drop" id="foto-drop" tabindex="0" style="margin-bottom:12px"><b>Tomar foto de la factura</b><span class="hint">Leo el QR y, con IA, el proveedor y cada producto. Tú solo revisas y registras.</span></div>
+      <input type="file" id="foto" accept="image/*" capture="environment" hidden>
+      <div id="f-msg"></div><div id="f-ia" style="margin-bottom:10px"></div>
+      <div class="row">
+        <label>Tipo
+          <select id="c-tipo">
+            <option value="01">Factura</option><option value="03">Boleta</option>
+            <option value="07">Nota de crédito</option><option value="12">Ticket</option>
+          </select></label>
+        <label>Fecha de emisión<input id="c-fecha" type="date"></label>
+      </div>
+      <div class="row">
+        <label>Serie y número<input id="c-serie" placeholder="F001-1234"></label>
+        <label>RUC del proveedor<input id="c-ruc" inputmode="numeric" maxlength="11"></label>
+      </div>
+      <div class="row"><label>Proveedor<input id="c-prov" placeholder="Nombre del proveedor"></label></div>
+      <div class="row"><label>Detalle<input id="c-det" placeholder="Harina, mantequilla, cajas…"></label></div>
+      <div class="radios" id="modos">
+        <label><input type="radio" name="modo" value="gravado" checked>Todo con IGV (el total ya incluye el 18 %)</label>
+        <label><input type="radio" name="modo" value="exonerado">Todo sin IGV (exonerado o inafecto: huevos, frutas, leche fresca…)</label>
+        <label><input type="radio" name="modo" value="mixto">Mixto: copio los montos de la factura</label>
+      </div>
+      <div class="row" id="r-total"><label>Total pagado (S/)<input id="c-total" inputmode="decimal" placeholder="0.00"></label></div>
+      <div class="row" id="r-mixto" hidden>
+        <label>Op. gravada<input id="c-base" inputmode="decimal" placeholder="0.00"></label>
+        <label>Exonerado / inafecto<input id="c-nog" inputmode="decimal" placeholder="0.00"></label>
+        <label>IGV<input id="c-igv" inputmode="decimal" placeholder="0.00"></label>
+      </div>
+      <div id="items-box" hidden>
+        <h2 style="margin-top:14px">Productos <small class="hint">(se guardan en "Precios de insumos")</small></h2>
+        <div class="scroll"><table id="items"></table></div>
+        <button class="btn sec" id="item-add" type="button" style="margin-top:6px">+ Agregar producto</button>
+        <p class="hint" id="items-hint"></p>
+      </div>
+      <div class="calc" id="calc"></div>
+      <button class="btn" id="guardar">Registrar compra</button>
+      <div id="c-msg"></div>
+      <p class="hint">Solo las <b>facturas</b> emitidas a tu RUC dan crédito fiscal. Si puedes, sube el XML: los montos quedan exactos.</p>
+    </div>
+  </section>
+
+  <!-- XML -->
+  <section id="t-xml" hidden>
+    <div class="card">
+      <h2>Subir comprobantes electrónicos</h2>
+      <div class="drop" id="drop" tabindex="0"><b>Toca para elegir XML o ZIP</b><span class="hint">Facturas de tus proveedores o tus propias boletas. Puedes elegir varios.</span></div>
+      <input type="file" id="file" accept=".xml,.zip" multiple hidden>
+      <div id="x-msg"></div>
+      <p class="hint">El sistema reconoce solo si es venta (emitida por tu RUC) o compra (emitida a tu RUC). Si un comprobante ya estaba registrado, no se duplica.</p>
+      <button class="btn sec" id="importar" style="margin-top:10px">Revisar carpeta de Drive y Gmail ahora</button>
+    </div>
+  </section>
+</div>
+
+<script>
+window.addEventListener('error', function (e) { var b = document.getElementById('kpis'); if (!b) return; var t = ''; try { var sc = document.getElementsByTagName('script'); for (var i = 0; i < sc.length; i++) { var L = (sc[i].text || '').split('\n'); t += '[script ' + i + ' rel: ' + (L[e.lineno - 1] || '').slice(0, 140) + ']'; } var D = document.documentElement.outerHTML.split('\n'); t += '[doc: ' + (D[e.lineno - 1] || '').slice(0, 140) + ']'; } catch (x) { t += 'x'; } var p = document.createElement('pre'); p.style.cssText = 'white-space:pre-wrap;font-size:12px'; p.textContent = 'Error de la app: ' + (e.message || e) + ' (linea ' + e.lineno + ', col ' + e.colno + ') ' + t; b.innerHTML = ''; b.appendChild(p); });
+window.addEventListener('unhandledrejection', function (e) { var b = document.getElementById('kpis'); if (b) b.innerHTML = '<div class="msg err">Error: ' + ((e.reason && e.reason.message) || e.reason) + '</div>'; });
+</script>
+<script>
+/* App en GitHub (31/10/2026): el panel llama al web app del Registro tributario (mismas funciones del servidor, con la misma clave). */
+const REGP = (function () { const o = { url: '', key: '' }; try { const c = JSON.parse(localStorage.getItem('dz_cat2') || 'null'); const b = c && c.enlaces && (c.enlaces.registro || c.enlaces.boleta); if (b) { const u = new URL(b); o.url = u.origin + u.pathname; o.key = u.searchParams.get('k') || ''; } } catch (e) { } return o; })();
+const K = REGP.key;
+const $ = id => document.getElementById(id);
+const n = v => { const x = parseFloat(String(v || '').replace(/,/g, '')); return isNaN(x) ? 0 : x; };
+const f2 = v => (Number(v) || 0).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const run = (fn, ...args) => {
+  if (!REGP.url) return Promise.reject(new Error('Falta el enlace del Registro. Abre el Inicio de la app con internet para descargarlo.'));
+  return fetch(REGP.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ api: fn, k: K, args: args }) })
+    .then(r => r.json(), () => { throw new Error('Sin conexión con Google. Revisa tu internet e inténtalo otra vez.'); })
+    .then(j => { if (!j.ok) throw new Error(j.error || 'Error del servidor'); return j.data; });
+};
+
+// Pestañas
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x === b));
+  ['resumen', 'compra', 'xml'].forEach(t => $('t-' + t).hidden = t !== b.dataset.t);
+});
+
+// Resumen
+let DATA = null;
+function pintar() {
+  if (!DATA) return;
+  const m = DATA.meses.find(x => x.per === $('selMes').value) || DATA.meses[0];
+  $('kpis').innerHTML = `
+    <div class="kpi big"><small>Total a pagar a SUNAT · ${esc(m.mes)}</small><b>S/ ${f2(m.total)}</b></div>
+    <div class="kpi"><small>Ventas (con IGV)</small><b>S/ ${f2(m.ventas)}</b></div>
+    <div class="kpi"><small>Ingresos netos</small><b>S/ ${f2(m.netos)}</b></div>
+    <div class="kpi"><small>IGV de ventas</small><b>S/ ${f2(m.igvV)}</b></div>
+    <div class="kpi"><small>IGV de compras (crédito)</small><b>S/ ${f2(m.igvC)}</b></div>
+    <div class="kpi"><small>IGV a pagar</small><b>S/ ${f2(m.igvPagar)}</b></div>
+    <div class="kpi"><small>Renta RER 1.5 %</small><b>S/ ${f2(m.renta)}</b></div>`;
+  $('nota').innerHTML = (m.saldoAnt ? `Se aplicó saldo a favor del mes anterior: S/ ${f2(m.saldoAnt)}. ` : '') +
+    (m.saldoSig ? `Te queda saldo a favor de IGV para el mes siguiente: <b>S/ ${f2(m.saldoSig)}</b>.` : '') +
+    (DATA.ruc ? '' : ' <b>Falta tu RUC en la hoja Config.</b>');
+}
+function cargar() {
+  $('kpis').innerHTML = '<p class="hint">Cargando…</p>';
+  run('apiResumen').then(d => {
+    DATA = d;
+    const sel = $('selMes'), prev = sel.value;
+    sel.innerHTML = d.meses.map(m => `<option value="${esc(m.per)}">${esc(m.mes)}</option>`).join('');
+    sel.value = prev || (d.meses.some(m => m.per === d.actual) ? d.actual : d.meses[0].per);
+    pintar();
+    $('ult').innerHTML = d.ultimas.length ? '<thead><tr><th>Proveedor</th><th>Fecha</th><th>IGV</th><th>Total</th></tr></thead><tbody>' +
+      d.ultimas.map(u => `<tr><td>${esc(u.prov || u.serie)}<br><small style="color:var(--muted)">${esc(u.tipo)} ${esc(u.serie)} · ${u.credito === 'Sí' ? 'con crédito' : 'sin crédito'}</small></td><td>${esc(u.fecha)}</td><td>${esc(u.igv)}</td><td>${esc(u.total)}</td></tr>`).join('') + '</tbody>'
+      : '<tbody><tr><td>Aún no hay compras registradas.</td></tr></tbody>';
+  }).catch(e => $('kpis').innerHTML = `<div class="msg err">${esc(e.message || e)}</div>`);
+}
+$('selMes').onchange = pintar; $('recargar').onclick = cargar;
+
+// Compra manual
+$('c-fecha').value = new Date(Date.now() - 5 * 3600e3).toISOString().slice(0, 10);
+const modo = () => document.querySelector('input[name=modo]:checked').value;
+function calcular() {
+  const m = modo(); $('r-mixto').hidden = m !== 'mixto'; $('r-total').hidden = m === 'mixto';
+  let base = 0, nog = 0, igv = 0, total = n($('c-total').value);
+  if (m === 'gravado') { base = Math.round(total / 1.18 * 100) / 100; igv = Math.round((total - base) * 100) / 100; }
+  else if (m === 'exonerado') nog = total;
+  else { base = n($('c-base').value); nog = n($('c-nog').value); igv = n($('c-igv').value); total = base + nog + igv; }
+  const cred = ['01', '07'].includes($('c-tipo').value) && igv > 0;
+  $('calc').innerHTML = `Base S/ ${f2(base)} · No gravado S/ ${f2(nog)} · IGV S/ ${f2(igv)} · <b>Total S/ ${f2(total)}</b><br>` +
+    (cred ? '<span style="color:var(--ok)">Este IGV se descontará de lo que pagas a SUNAT.</span>' : '<span style="color:var(--warn)">No genera crédito fiscal.</span>');
+}
+['c-total', 'c-base', 'c-nog', 'c-igv', 'c-tipo'].forEach(id => $(id).addEventListener('input', calcular));
+document.querySelectorAll('input[name=modo]').forEach(r => r.onchange = calcular);
+calcular();
+$('guardar').onclick = () => {
+  const f = { tipo: $('c-tipo').value, fecha: $('c-fecha').value, serie: $('c-serie').value.trim(), ruc: $('c-ruc').value.trim(),
+    prov: $('c-prov').value.trim(), det: $('c-det').value.trim(), modo: modo(), total: n($('c-total').value),
+    base: n($('c-base').value), nograv: n($('c-nog').value), igv: n($('c-igv').value) };
+  const box = $('c-msg');
+  if (!f.fecha || !f.serie) { box.innerHTML = '<div class="msg err">Completa la fecha y la serie y número.</div>'; return; }
+  if (f.tipo === '01' && !/^\d{11}$/.test(f.ruc)) { box.innerHTML = '<div class="msg err">El RUC del proveedor debe tener 11 dígitos.</div>'; return; }
+  if (ITEMS.length && Math.round(ITEMS.reduce((s, x) => s + x.sub, 0) * 100) !== Math.round(totalActual() * 100)) { box.innerHTML = '<div class="msg err">Los productos no suman exactamente el total de la factura. Corrigelos o quitalos con la X antes de registrar.</div>'; return; }
+  $('guardar').disabled = true; box.innerHTML = '<div class="msg">Guardando…</div>';
+  run('apiRegistrarCompra', f).then(r => {
+    box.innerHTML = `<div class="msg ${r.dup ? 'err' : 'ok'}">${esc(r.msg)}</div>`;
+    if (!r.dup && ITEMS.length) { const it = ITEMS.map(x => ({ desc: x.desc, cant: x.cant, unidad: x.unidad, sub: x.sub, afect: x.afect })); ITEMS = []; pintarItems(); $('f-ia').innerHTML = ''; run('apiGuardarItemsFoto', { tipo: f.tipo, fecha: f.fecha, serie: f.serie, ruc: f.ruc, prov: f.prov, items: it }).catch(() => { }); }
+    if (!r.dup && FOTO) { const b = FOTO; FOTO = null; $('f-msg').innerHTML = ''; run('apiGuardarFoto', b, f.fecha + ' ' + f.serie).catch(() => { }); }
+    if (!r.dup) ['c-serie', 'c-total', 'c-base', 'c-nog', 'c-igv', 'c-det'].forEach(id => $(id).value = '');
+    calcular(); cargar();
+  }).catch(e => box.innerHTML = `<div class="msg err">${esc(e.message || e)}</div>`).finally(() => $('guardar').disabled = false);
+};
+
+// Subir XML / ZIP
+const leerB64 = f => new Promise((ok, ko) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = ko; r.readAsDataURL(f); });
+$('drop').onclick = () => $('file').click();
+$('drop').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } };
+$('file').onchange = async () => {
+  const files = [...$('file').files]; $('file').value = ''; if (!files.length) return;
+  const box = $('x-msg'); box.innerHTML = '<div class="msg">Leyendo ' + files.length + ' archivo(s)…</div>';
+  try {
+    const arr = await Promise.all(files.map(async f => ({ nombre: f.name, tipo: f.type, b64: await leerB64(f) })));
+    const res = await run('apiSubirArchivos', arr);
+    box.innerHTML = res.map(r => `<div class="msg ${r.ok && !r.dup ? 'ok' : 'err'}">${r.ok ? (r.dup ? '• ' : '✓ ') : '✗ '}${esc(r.msg)}</div>`).join('');
+    cargar();
+  } catch (e) { box.innerHTML = `<div class="msg err">${esc(e.message || e)}</div>`; }
+};
+$('importar').onclick = () => {
+  const box = $('x-msg'); box.innerHTML = '<div class="msg">Revisando…</div>'; $('importar').disabled = true;
+  run('apiImportarAhora').then(res => {
+    box.innerHTML = res.length ? res.map(r => `<div class="msg ${r.ok && !r.dup ? 'ok' : 'err'}">${esc(r.msg)}</div>`).join('') : '<div class="msg ok">No había comprobantes nuevos.</div>';
+    cargar();
+  }).catch(e => box.innerHTML = `<div class="msg err">${esc(e.message || e)}</div>`).finally(() => $('importar').disabled = false);
+};
+
+// Foto de factura → código QR de SUNAT
+let FOTO = null;
+const cargarJsQR = () => window.jsQR ? Promise.resolve() : new Promise((ok, ko) => {
+  const s = document.createElement('script');
+  s.src = 'https:' + String.fromCharCode(47, 47) + 'cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+  s.onload = ok; s.onerror = () => ko(new Error('No se pudo cargar el lector de QR. Revisa tu conexión.'));
+  document.head.appendChild(s);
+});
+const abrirImg = file => new Promise((ok, ko) => {
+  const im = new Image();
+  im.onload = () => ok(im); im.onerror = () => ko(new Error('No pude abrir la imagen.'));
+  im.src = URL.createObjectURL(file);
+});
+function lienzo(im, max) {
+  const s = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight));
+  const c = document.createElement('canvas');
+  c.width = Math.round(im.naturalWidth * s); c.height = Math.round(im.naturalHeight * s);
+  c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+  return c;
+}
+async function leerCodigo(im) {
+  if ('BarcodeDetector' in window) {
+    try {
+      const bd = new BarcodeDetector({ formats: ['qr_code', 'pdf417'] });
+      const r = await bd.detect(im);
+      if (r.length) return r[0].rawValue;
+    } catch (e) { }
+  }
+  await cargarJsQR();
+  const t0 = Date.now(), LIM = 12000, W = im.naturalWidth, H = im.naturalHeight;
+  const pausa = () => new Promise(ok => setTimeout(ok, 0));
+  const probar = async (sx, sy, sw, sh, max) => {
+    const s = Math.min(1, max / Math.max(sw, sh));
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(sw * s)); c.height = Math.max(1, Math.round(sh * s));
+    const g = c.getContext('2d', { willReadFrequently: true });
+    g.imageSmoothingQuality = 'high';
+    g.drawImage(im, sx, sy, sw, sh, 0, 0, c.width, c.height);
+    const d = g.getImageData(0, 0, c.width, c.height);
+    const r = jsQR(d.data, d.width, d.height, { inversionAttempts: 'dontInvert' });
+    await pausa();
+    return r && r.data ? r.data : '';
+  };
+  const tw = Math.round(W * 0.5), th = Math.round(H * 0.4), sx = Math.round(tw * 0.4), sy = Math.round(th * 0.4);
+  const vistos = new Set(), lista = [];
+  for (let y = 0; y < H; y += sy) {
+    for (let x = 0; x < W; x += sx) {
+      const x0 = Math.min(x, W - tw), y0 = Math.min(y, H - th), k = x0 + ',' + y0;
+      if (vistos.has(k)) continue;
+      vistos.add(k); lista.push([x0, y0, tw, th, 720]);
+    }
+  }
+  lista.sort((p, q) => Math.hypot(p[0] + p[2] / 2 - W / 2, p[1] + p[3] / 2 - H / 2) - Math.hypot(q[0] + q[2] / 2 - W / 2, q[1] + q[3] / 2 - H / 2));
+  for (const p of lista) {
+    if (Date.now() - t0 > LIM) break;
+    const v = await probar(...p);
+    if (v) return v;
+  }
+  return '';
+}
+// Formato SUNAT: RUC emisor | tipo | serie | número | IGV | total | fecha | tipo doc. cliente | n.º doc. cliente | hash
+function parsearQR(txt) {
+  const p = String(txt).split('|').map(x => x.trim());
+  if (p.length < 7 || !/^\d{11}$/.test(p[0])) return null;
+  let fecha = p[6], m = fecha.match(/^(\d{2})[\/-](\d{2})[\/-](\d{4})$/);
+  if (m) fecha = m[3] + '-' + m[2] + '-' + m[1];
+  m = fecha.match(/^\d{4}-\d{2}-\d{2}/); fecha = m ? m[0] : '';
+  const num = /^\d+$/.test(p[3]) ? String(parseInt(p[3], 10)) : p[3];
+  return { ruc: p[0], tipo: p[1].padStart(2, '0'), serie: p[2].toUpperCase() + '-' + num,
+    igv: n(p[4]), total: n(p[5]), fecha: fecha, ndoc: (p[8] || '').replace(/\D/g, '') };
+}
+const setModo = v => { document.querySelector('input[name=modo][value=' + v + ']').checked = true; };
+function aplicarQR(d) {
+  if ([...$('c-tipo').options].some(o => o.value === d.tipo)) $('c-tipo').value = d.tipo;
+  if (d.fecha) $('c-fecha').value = d.fecha;
+  $('c-serie').value = d.serie; $('c-ruc').value = d.ruc;
+  $('c-total').value = d.total.toFixed(2);
+  if (!d.igv) { setModo('exonerado'); }
+  else {
+    // Montos exactos del QR: IGV y total tal cual; la base se deduce del IGV
+    let base = Math.round(d.igv / 0.18 * 100) / 100;
+    let nog = Math.round((d.total - base - d.igv) * 100) / 100;
+    if (Math.abs(nog) <= 0.05) { base = Math.round((d.total - d.igv) * 100) / 100; nog = 0; }
+    setModo('mixto');
+    $('c-base').value = base.toFixed(2); $('c-igv').value = d.igv.toFixed(2); $('c-nog').value = Math.max(0, nog).toFixed(2);
+  }
+  calcular();
+}
+$('foto-drop').onclick = () => $('foto').click();
+$('foto-drop').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('foto').click(); } };
+// Productos leídos con IA (editables)
+let ITEMS = [];
+function totalActual() { return modo() === 'mixto' ? n($('c-base').value) + n($('c-nog').value) + n($('c-igv').value) : n($('c-total').value); }
+function pintarItems() {
+  $('items-box').hidden = !ITEMS.length;
+  $('items').innerHTML = ITEMS.length ? '<thead><tr><th>Producto</th><th>Cant.</th><th>Total S/</th><th>IGV</th><th></th></tr></thead><tbody>' +
+    ITEMS.map((it, i) => '<tr>' +
+      '<td><input data-i="' + i + '" data-k="desc" value="' + esc(it.desc) + '" aria-label="Producto"></td>' +
+      '<td style="width:70px"><input data-i="' + i + '" data-k="cant" inputmode="decimal" value="' + it.cant + '" aria-label="Cantidad"></td>' +
+      '<td style="width:100px"><input data-i="' + i + '" data-k="sub" inputmode="decimal" value="' + it.sub.toFixed(2) + '" aria-label="Total de la línea con IGV">' +
+      '<small style="color:var(--muted)">S/ ' + f2(it.cant ? it.sub / it.cant : 0) + ' c/u</small></td>' +
+      '<td style="width:105px"><select data-i="' + i + '" data-k="afect" aria-label="IGV"><option value="gravado"' + (it.afect === 'gravado' ? ' selected' : '') +
+      '>Con IGV</option><option value="exonerado"' + (it.afect !== 'gravado' ? ' selected' : '') + '>Sin IGV</option></select></td>' +
+      '<td style="width:36px"><button class="x" type="button" data-del="' + i + '" aria-label="Quitar producto">×</button></td></tr>').join('') + '</tbody>' : '';
+  const suma = ITEMS.reduce((s, x) => s + x.sub, 0), tot = totalActual();
+  let h = ITEMS.length ? 'Suma de productos: <b>S/ ' + f2(suma) + '</b>' : '';
+  if (ITEMS.length && tot) { const dif = Math.abs(suma - tot), okc = Math.round(dif * 100) === 0; h = '<div class="chk ' + (okc ? 'ok' : 'bad') + '"><span class="chk-i">' + (okc ? '&#10003;' : '!') + '</span><div>' + (okc ? '<b>' + (dif < 0.01 ? 'Cuadra exacto con el total' : 'Cuadra con el total') + '</b><br>Productos S/ ' + f2(suma) + ' = comprobante S/ ' + f2(tot) : '<b>No cuadra con el total</b><br>Productos S/ ' + f2(suma) + ' · comprobante S/ ' + f2(tot) + '. Revisa los productos.') + '</div></div>'; }
+  $('items-hint').innerHTML = h;
+}
+$('items').addEventListener('change', e => {
+  const t = e.target, i = +t.dataset.i, k = t.dataset.k;
+  if (!ITEMS[i] || !k) return;
+  ITEMS[i][k] = (k === 'desc' || k === 'afect') ? t.value : n(t.value);
+  pintarItems();
+});
+$('items').addEventListener('click', e => { const b = e.target.closest('[data-del]'); if (b) { ITEMS.splice(+b.dataset.del, 1); pintarItems(); } });
+$('item-add').onclick = () => { ITEMS.push({ desc: '', cant: 1, unidad: '', sub: 0, afect: 'gravado' }); pintarItems(); };
+['c-total', 'c-base', 'c-nog', 'c-igv'].forEach(id => $(id).addEventListener('input', () => { if (ITEMS.length) pintarItems(); }));
+
+function iaAItems(d) {
+  return (d.items || []).map(i => {
+    const sinIgv = /exoner|inafect/i.test(i.afectacion || '');
+    let sub = n(i.importe);
+    if (!sinIgv && i.incluye_igv === false) sub = Math.round(sub * 118) / 100;
+    return { desc: String(i.descripcion || '').trim(), cant: n(i.cantidad) || 1, unidad: String(i.unidad || ''), sub: sub, afect: sinIgv ? 'exonerado' : 'gravado' };
+  }).filter(x => x.desc && x.sub > 0);
+}
+function aplicarIA(d) {
+  const tipo = String(d.tipo || '').padStart(2, '0');
+  if ([...$('c-tipo').options].some(o => o.value === tipo)) $('c-tipo').value = tipo;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(d.fecha || '')) $('c-fecha').value = d.fecha;
+  if (d.serie) $('c-serie').value = String(d.serie).toUpperCase().trim() + (d.numero ? '-' + String(d.numero).trim().replace(/^0+(?=\d)/, '') : '');
+  const ruc = String(d.ruc_emisor || '').replace(/\D/g, '');
+  if (ruc.length === 11) $('c-ruc').value = ruc;
+  const igv = n(d.igv), tot = n(d.total), grav = n(d.op_gravada), nog = n(d.op_exonerada) + n(d.op_inafecta);
+  $('c-total').value = tot ? tot.toFixed(2) : '';
+  if (!igv) setModo('exonerado');
+  else {
+    setModo('mixto');
+    const base = grav || Math.round(igv / 0.18 * 100) / 100;
+    $('c-base').value = base.toFixed(2); $('c-igv').value = igv.toFixed(2);
+    $('c-nog').value = Math.max(0, nog || Math.round((tot - base - igv) * 100) / 100).toFixed(2);
+  }
+  const doc = String(d.doc_cliente || '').replace(/\D/g, '');
+  if (doc && DATA && DATA.ruc && doc !== DATA.ruc) $('f-msg').insertAdjacentHTML('beforeend',
+    '<div class="msg err">Parece emitida al documento ' + esc(doc) + ', no a tu RUC: no daría crédito fiscal.</div>');
+  if (tipo === '03') $('f-msg').insertAdjacentHTML('beforeend', '<div class="msg err">Es una boleta: no da crédito fiscal. Pide factura con tu RUC.</div>');
+}
+function afinarConIA(d) { const c = x => Math.round(x * 100), igv = n(d.igv), tot = n(d.total), grav = n(d.op_gravada), nog = n(d.op_exonerada) + n(d.op_inafecta); if (c(tot) !== c(n($('c-total').value)) || c(igv) !== c(n($('c-igv').value))) return false; if (c(grav) + c(nog) + c(igv) !== c(tot)) return false; setModo('mixto'); $('c-base').value = grav.toFixed(2); $('c-nog').value = nog.toFixed(2); calcular(); return true; }
+async function leerConIA(tieneQR) {
+  const box = $('f-ia');
+  box.innerHTML = '<div class="scan"><div class="scan-doc"><i></i><i></i><i></i><i></i><i></i><b></b></div><div class="scan-t"><span>Leyendo la factura...</span><span>Identificando productos...</span><span>Revisando montos e IGV...</span></div></div>';
+  try {
+    const r = await run('apiLeerFoto', FOTO);
+    if (!r.ok && r.sinClave) {
+      box.innerHTML = '<div class="msg err">Para leer productos desde la foto falta activar la IA: en la hoja, menú Dulzú → Configurar lectura de fotos (IA).</div>';
+      return;
+    }
+    const d = r.datos || {};
+    let fino = false; if (!tieneQR) aplicarIA(d); else fino = afinarConIA(d);
+    if (!$('c-prov').value && d.razon_social_emisor) $('c-prov').value = d.razon_social_emisor;
+    ITEMS = iaAItems(d);
+    if (!$('c-det').value && ITEMS.length) $('c-det').value = ITEMS.map(x => x.desc).join(', ').slice(0, 200);
+    calcular(); pintarItems();
+    box.innerHTML = '<div class="msg ok">La IA leyó ' + ITEMS.length + ' producto(s)' + (tieneQR ? '' : ' y los datos del comprobante') +
+      '. Compáralos con la factura antes de registrar.</div>' + (tieneQR ? (fino ? '<div class="msg ok">Base y no gravado confirmados al centimo con la factura.</div>' : '<div class="msg err">No pude confirmar la base y el no gravado al centimo: revisalos con la factura.</div>') : '');
+  } catch (e) { box.innerHTML = '<div class="msg err">' + esc(e.message || e) + '</div>'; }
+}
+
+$('foto').onchange = async () => {
+  const file = $('foto').files[0]; $('foto').value = '';
+  if (!file) return;
+  const box = $('f-msg'); box.innerHTML = '<div class="scan"><div class="scan-doc qr"><b></b></div><div class="scan-t"><span class="on">Buscando el codigo QR de la factura...</span></div></div>';
+  $('f-ia').innerHTML = ''; ITEMS = []; pintarItems();
+  try {
+    const im = await abrirImg(file);
+    FOTO = lienzo(im, 2000).toDataURL('image/jpeg', 0.85).split(',')[1];
+    const txt = await leerCodigo(im);
+    const d = txt ? parsearQR(txt) : null;
+    if (d) {
+      aplicarQR(d);
+      const avisos = [];
+      if (d.tipo === '03') avisos.push('Es una boleta: no da crédito fiscal. Pide factura con tu RUC.');
+      if (d.ndoc && DATA && DATA.ruc && d.ndoc !== DATA.ruc) avisos.push('Está emitida al documento ' + d.ndoc + ', no a tu RUC: no dará crédito fiscal.');
+      box.innerHTML = '<div class="msg ok">QR leído: ' + esc(d.serie) + ' · Total S/ ' + f2(d.total) + ' · IGV S/ ' + f2(d.igv) + ' (total e IGV exactos del QR).</div>' +
+        avisos.map(a => '<div class="msg err">' + esc(a) + '</div>').join('');
+      $('c-prov').value = '';
+      run('apiProveedor', d.ruc).then(nom => { if (nom) $('c-prov').value = nom; }).catch(() => { });
+    } else {
+      box.innerHTML = '<div class="msg">No encontré el QR: la IA leerá también los datos y montos del comprobante (revísalos).</div>';
+    }
+    leerConIA(!!d);
+  } catch (e) { box.innerHTML = '<div class="msg err">' + esc(e.message || e) + '</div>'; }
+};
+
+cargar();
+</script>
+</body>
+</html>
