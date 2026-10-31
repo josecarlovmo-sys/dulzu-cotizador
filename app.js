@@ -896,6 +896,7 @@
   function irA(v) {
     if (v === 'cotizar') { location.hash = 'cotizar'; return; }
     if (v === 'hoja') { location.href = 'hoja.html'; return; }
+    if (v === 'boleta') { location.href = 'boleta.html'; return; }
     var e = (CAT && CAT.enlaces) || {};
     if (v === 'hojas') {
       if (!e.hojas) { toast('Cargando enlaces… intenta en unos segundos'); return; }
