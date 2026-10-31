@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Carta · Dulzú</title>
+<link rel="icon" href="monograma.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Jost:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#FBF4E8;--card:#FFFFFF;--ink:#3F2B26;--muted:#6F5036;--line:#EADBCF;--vino:#7A1432;--coral:#D8334F}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Jost","Segoe UI",system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:calc(10px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px))}
+.dz-back{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:var(--vino);font:500 15px Jost,system-ui,sans-serif;text-decoration:none;padding:0 4px}
+h1{font-family:"Fraunces",Georgia,serif;font-weight:400;font-size:26px;margin:4px 0 0;color:var(--vino)}
+.sub{margin:4px 0 14px;color:var(--muted);font-size:14px;min-height:20px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.bar a{flex:1 1 auto;text-align:center;text-decoration:none;font-size:15px;font-weight:500;border-radius:999px;padding:12px 16px;min-height:44px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.bar a.primary{background:var(--vino);border-color:var(--vino);color:#fff}
+.bar a.off{opacity:.45;pointer-events:none}
+.stage{background:#F1E6D8;border-radius:14px;padding:12px;text-align:center;min-height:200px}
+.stage img{width:100%;max-width:700px;height:auto;display:block;margin:0 auto;box-shadow:0 1px 2px rgba(63,43,38,.12),0 8px 24px rgba(63,43,38,.10);background:#fff}
+.empty{padding:40px 16px;color:var(--muted)}
+.hint{font-size:13px;color:var(--muted);margin-top:12px;line-height:1.45}
+</style></head><body><div class="wrap">
+<a class="dz-back" href="./">&#8249; Herramientas</a>
+<h1>Carta de bocaditos</h1>
+<p class="sub" id="sub">Cargando la carta…</p>
+<div class="bar">
+<a class="primary off" id="bImg" href="#" target="_blank" rel="noopener">Descargar imagen</a>
+<a class="off" id="bPdf" href="#" target="_blank" rel="noopener">Descargar PDF</a>
+<a class="off" id="bDir" href="#" target="_blank" rel="noopener">Abrir carpeta</a>
+</div>
+<div class="stage" id="stage"></div>
+<p class="hint">Siempre se muestra la imagen y el PDF más recientes de la carpeta <b>CARTA</b> en tu Drive. Para cambiar la carta, sube ahí la nueva versión y aparecerá aquí sola.</p>
+</div>
+<script>
+/* Carta de bocaditos en la app (31/10/2026): muestra al instante la última carta guardada en el teléfono y la actualiza desde Drive */
+(function(){
+var API='https://script.google.com/macros/s/AKfycbwIDp3-xUtD7GFfvjS-g6oCFJ8HVKtSfjLjXT5j_96P2qnaOL4rvSRajMWdTSrYWAlg/exec';
+var KEY='';try{KEY=localStorage.getItem('dzk')||''}catch(e){}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function enlace(id,url){var a=$(id);if(url){a.href=url;a.classList.remove('off')}else{a.href='#';a.classList.add('off')}}
+var actual='';
+function pintar(c,nota){
+var firma=c.imagen?c.imagen.nombre+'|'+c.imagen.fecha:'-';
+$('sub').textContent=(c.imagen?'Versión: '+c.imagen.nombre+' · actualizada el '+c.imagen.fecha:'No hay ninguna carta en la carpeta CARTA.')+(nota?' · '+nota:'');
+enlace('bImg',c.imagen&&c.imagen.descarga);enlace('bPdf',c.pdf&&c.pdf.descarga);enlace('bDir',c.carpeta);
+if(firma===actual)return;actual=firma;
+$('stage').innerHTML=c.imagen?'<img src="'+c.imagen.dataUri+'" alt="Carta de bocaditos Dulzú">':'<div class="empty">Sube la carta (PNG o JPG, y su PDF) a la carpeta CARTA de NUBE DULZU.</div>';
+}
+var cache=null;try{cache=JSON.parse(localStorage.getItem('dz_carta')||'null')}catch(e){}
+if(cache)pintar(cache,'actualizando…');
+fetch(API+'?api=carta&k='+encodeURIComponent(KEY)).then(function(r){return r.json()}).then(function(j){
+if(!j.ok)throw new Error(j.error||'Error del servidor');
+pintar(j.data,'');
+try{localStorage.setItem('dz_carta',JSON.stringify(j.data))}catch(e){}
+}).catch(function(err){
+if(cache)pintar(cache,'sin conexión, es la última guardada');
+else $('sub').textContent='No se pudo cargar la carta: '+((err&&err.message)||err);
+});
+})();
+</script>
+</body></html>
