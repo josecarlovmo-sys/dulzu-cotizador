@@ -42,6 +42,44 @@ try{var pf=JSON.parse(localStorage.getItem('dz_hoja_prefill')||'null');if(pf&&pf
 .sheet .compacto .bottom{margin-top:2.6mm}
 .sheet .compacto .obs .lined{height:7mm}
 .sheet .compacto header{padding-bottom:3mm}
+/* Hoja de cotización · diseño aprobado 30/10/2026 */
+.sheet .page.q{padding:0!important;display:flex;flex-direction:column;background:#fff;color:#3F2B26;font-family:Jost,system-ui,sans-serif}
+.q .q-stripe{display:flex;height:2.2mm;flex:none}.q .q-stripe i{flex:1}
+.q .q-head{display:flex;justify-content:space-between;align-items:flex-start;margin:0 14mm;padding:8mm 0 7mm;border-bottom:.3mm solid #EADBCF}
+.q .q-lock{display:flex;align-items:center;gap:3.5mm}.q .q-lock .m{width:18mm;height:18mm}.q .q-lock .w{height:19mm;width:auto}
+.q .q-doc{text-align:right}
+.q .q-tit{font:400 26pt Fraunces,Georgia,serif;color:#7A1432;line-height:1}
+.q .q-meta{display:grid;grid-template-columns:auto auto;gap:.6mm 3mm;justify-content:end;margin-top:3mm;font-size:8.6pt;color:#6F5036;line-height:1.5}
+.q .q-meta b{color:#3F2B26;font-weight:500}
+.q .q-val{grid-column:1/span 2;margin-top:1.2mm;font-size:8pt;color:#7A1432;font-weight:500}
+.q .q-para{margin:6mm 14mm 0}
+.q .q-lbl{font-size:7pt;letter-spacing:1.2pt;text-transform:uppercase;color:#6F5036;font-weight:500}
+.q .q-nom{font:400 15pt Fraunces,Georgia,serif;margin-top:1mm}
+.q .q-con{font-size:8.6pt;color:#6F5036;margin-top:1mm}
+.q .q-tab{margin:6mm 14mm 0}
+.q .q-th{display:grid;grid-template-columns:66% 12% 22%;color:#7A1432;border-bottom:.45mm solid #7A1432;padding:0 3mm 2.2mm;font-size:9.6pt;letter-spacing:1.3pt;font-weight:500;text-transform:uppercase}
+.q .q-th span:not(:first-child),.q .q-r .n{text-align:right}
+.q .q-cat{display:flex;align-items:center;margin-top:3mm;padding:2mm 3mm;border-radius:1.6mm;font:400 11pt Fraunces,Georgia,serif}
+.q .q-cat i{width:2.4mm;height:2.4mm;border-radius:50% 50% 50% 0;transform:rotate(-45deg);margin:0 2.4mm 0 .6mm;flex:none}
+.q .q-r{display:grid;grid-template-columns:66% 12% 22%;padding:2.2mm 3mm;border-bottom:.25mm solid #F0E4DA;font-size:9pt;font-variant-numeric:tabular-nums}
+.q .q-r .d{font-weight:500}
+.q .q-r .s{display:block;font-size:8pt;color:#6F5036;margin-top:.8mm;line-height:1.45;font-weight:400}
+.q .q-res{display:grid;grid-template-columns:1fr 70mm;gap:10mm;margin:6mm 14mm 0;align-items:start}
+.q .q-cond{background:#FBF4E8;border-radius:2mm;padding:3.6mm 4.4mm;font-size:7.6pt;line-height:1.55;color:#6F5036}
+.q .q-cond .h{font:400 10pt Fraunces,Georgia,serif;color:#7A1432;margin-bottom:1.5mm}
+.q .q-cond .li{position:relative;padding-left:3.4mm}.q .q-cond .li::before{content:"•";position:absolute;left:.4mm}
+.q .q-cond .ob{margin-top:2mm;color:#3F2B26;font-size:8pt}
+.q .q-l{display:flex;justify-content:space-between;font-size:8.8pt;padding:1.4mm 1mm;color:#6F5036;font-variant-numeric:tabular-nums}
+.q .q-l b{color:#3F2B26;font-weight:400}
+.q .q-t{display:flex;justify-content:space-between;align-items:baseline;background:#7A1432;color:#fff;border-radius:2mm;padding:3mm 4mm;margin-top:2.4mm}
+.q .q-t span{font:400 14pt Fraunces,Georgia,serif}.q .q-t b{font:500 16pt Fraunces,Georgia,serif;font-variant-numeric:tabular-nums}
+.q .q-igv{text-align:right;font-size:7.4pt;color:#6F5036;margin-top:1mm}
+.q .q-pie{margin:auto 14mm 10mm;padding-top:3.4mm;border-top:.3mm solid #EADBCF;display:flex;justify-content:space-between;align-items:center}
+.q .q-pie .g{font:400 11pt Fraunces,Georgia,serif;color:#7A1432}
+.q .q-pie img{width:12mm;height:12mm}
+.q.c1 .q-r{padding:1.5mm 3mm}.q.c1 .q-cat{margin-top:2mm;padding:1.4mm 3mm}.q.c1 .q-head{padding:6mm 0 5mm}.q.c1 .q-tab,.q.c1 .q-res{margin-top:4mm}
+.q.c2 .q-r{padding:1mm 3mm;font-size:8.4pt}.q.c2 .q-r .s{font-size:7.4pt}
+
 </style>
 
 <title>Hoja de cotización Dulzú</title>
@@ -200,7 +238,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
         <legend><i class="v"></i>Cotización</legend>
         <div class="row">
           <label for="fecha">Fecha<input type="date" id="fecha" data-k="fecha"></label>
-          <label for="valida">Válida hasta<input type="date" id="valida" data-k="valida"></label>
+          <label for="entrega">Fecha de entrega<input type="date" id="entrega" data-k="entrega"></label>
         </div>
       </fieldset>
 
@@ -293,7 +331,7 @@ const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.t
 const fmtDate=s=>{if(!s)return"";const [y,m,d]=s.split("-");return `${d}/${m}/${y}`};
 
 function blank(){const t=new Date(),v=new Date();v.setDate(t.getDate()+7);
-  return {fecha:iso(t),valida:iso(v),nombre:"",whatsapp:"",correo:"",empresa:"",direccion:"",tematica:"",porciones:"",pisos:"",sabor:"",relleno:"",cobertura:"",colores:"",mensaje:"",decoracion:"",precioTorta:"",delivery:"",descuento:"",obs:"",bocas:[{n:"",c:"",p:""}]};}
+  return {fecha:iso(t),valida:iso(v),entrega:"",nombre:"",whatsapp:"",correo:"",empresa:"",direccion:"",tematica:"",porciones:"",pisos:"",sabor:"",relleno:"",cobertura:"",colores:"",mensaje:"",decoracion:"",precioTorta:"",delivery:"",descuento:"",obs:"",bocas:[{n:"",c:"",p:""}]};}
 function example(){const s=blank();Object.assign(s,{nombre:"Ejemplo: María López",whatsapp:"999 999 999",correo:"",empresa:"",direccion:"Av. Ejemplo 123, Miraflores",
   tematica:"Cumpleaños – jardín encantado",porciones:"25 porciones",pisos:"2 pisos, redonda",sabor:"Vainilla",relleno:"Manjar y fresas",cobertura:"Buttercream",colores:"Rosa pastel y blanco",mensaje:"Feliz cumpleaños Sofía",
   decoracion:"Flores de buttercream en tonos rosa, mariposas de papel comestible y topper con nombre.",precioTorta:"180",delivery:"15",descuento:"",obs:"Datos de ejemplo: reemplázalos con los del cliente.",
@@ -336,9 +374,9 @@ function totals(){const tb=S.bocas.reduce((a,b)=>a+num(b.p),0);
 
 function f(v){return has(v)?esc(v):""}
 function lines(n,pitch){let h="";for(let i=1;i<=n;i++)h+=`<div class="rl" style="top:${i*pitch-.3}mm"></div>`;return h}
-function renderSheet(){const tt=totals(),tb=tt.tb,t=tt.t;
-/* 30/10/2026: cada apartado aparece solo si el pedido lo incluye (torta, bocaditos, temáticos, postres) */
-const G={boc:{t:"Bocaditos",s:"Dulces y salados",c:"#EA7038",l:"Bocaditos",p:"los bocaditos",col:"Bocadito"},tem:{t:"Bocaditos temáticos",s:"Decorados para tu celebración",c:"#E66B8C",l:"Temáticos",p:"los temáticos",col:"Bocadito"},pos:{t:"Postres",s:"",c:"#7A1432",l:"Postres",p:"los postres",col:"Postre"}};
+function renderSheet(){const tt=totals(),t=tt.t;
+/* Diseño 2026-10-30 (aprobado, v7): detalle único por grupos; cada grupo aparece solo si el pedido lo tiene */
+const G={boc:{t:"Bocaditos",c:"#EA7038",bg:"#FDE9DE",tx:"#B4541F"},tem:{t:"Bocaditos temáticos",c:"#E66B8C",bg:"#FCE4EC",tx:"#B8466A"},pos:{t:"Postres",c:"#7A1432",bg:"#F5E1E6",tx:"#7A1432"}};
 const filled=S.bocas.filter(b=>has(b.n)||has(b.c)||has(b.p));
 const grupo=b=>{if(b.g&&G[b.g])return b.g;const pr=PRODS[String(b.n||"").trim().toLowerCase()];return pr&&pr.g?pr.g:"boc"};
 const porG={boc:[],tem:[],pos:[]};filled.forEach(b=>porG[grupo(b)].push(b));
@@ -348,58 +386,42 @@ const verTorta=hayTorta||vacio;
 const grupos=["boc","tem","pos"].filter(g=>porG[g].length||(vacio&&g==="boc"));
 const sumG=g=>porG[g].reduce((a,b)=>a+num(b.p),0);
 const conP=g=>porG[g].some(b=>has(b.p));
-let secs="";
-if(verTorta)secs+='<h3><i class="dot" style="background:#D8334F"></i>Torta <small>Todas las características del pedido</small></h3>'+
-'<div class="cake"><div class="g2">'+
-'<div class="field"><label>Temática / ocasión</label><div class="fill">'+f(S.tematica)+'</div></div>'+
-'<div class="field"><label>Porciones / tamaño</label><div class="fill">'+f(S.porciones)+'</div></div>'+
-'<div class="field"><label>Pisos / forma</label><div class="fill">'+f(S.pisos)+'</div></div>'+
-'<div class="field"><label>Sabor del bizcocho</label><div class="fill">'+f(S.sabor)+'</div></div>'+
-'<div class="field"><label>Relleno</label><div class="fill">'+f(S.relleno)+'</div></div>'+
-'<div class="field"><label>Cobertura</label><div class="fill">'+f(S.cobertura)+'</div></div>'+
-'<div class="field"><label>Colores</label><div class="fill">'+f(S.colores)+'</div></div>'+
-'<div class="field"><label>Mensaje / nombre</label><div class="fill">'+f(S.mensaje)+'</div></div></div>'+
-'<div class="lined"><div class="rl" style="top:5.1mm;left:44mm"></div><div class="rl" style="top:13.1mm"></div><div class="rl" style="top:21.1mm"></div>'+
-'<label>Decoración y detalles</label><p style="text-indent:46mm;top:-1.9mm">'+f(S.decoracion)+'</p></div>'+
-'<div class="price" style="background:#D8334F;margin-top:1mm"><span>Precio total de la torta</span><b>'+(has(S.precioTorta)?money(num(S.precioTorta)):"S/")+'</b></div></div>';
-grupos.forEach(g=>{const L=porG[g],n=vacio?6:L.length,c=G[g].c;let rows="";
-for(let i=0;i<n;i++){const b=L[i];rows+='<tr><td class="rh">'+(b?f(b.n):"")+'</td><td class="n">'+(b&&has(b.c)?f(b.c):"")+'</td><td class="n p '+(b&&has(b.p)?"v":"")+'">'+(b&&has(b.p)?money(num(b.p)):"S/")+'</td></tr>'}
-secs+='<h3><i class="dot" style="background:'+c+'"></i>'+G[g].t+(G[g].s?' <small>'+G[g].s+'</small>':"")+'</h3>'+
-'<table><thead><tr><th style="width:68%;background:'+c+'">'+G[g].col+'</th><th class="n" style="width:12%;background:'+c+'">Cant.</th><th class="n" style="width:20%;background:'+c+'">Precio total</th></tr></thead><tbody>'+rows+'</tbody></table>'+
-'<div class="price" style="background:'+c+';margin-top:2.6mm"><span>Precio total de '+G[g].p+'</span><b>'+(conP(g)?money(sumG(g)):"S/")+'</b></div>'});
+const jn=a=>a.filter(x=>has(x)).join(" · ");
+const DIAS=["dom","lun","mar","mié","jue","vie","sáb"];
+const fmtEnt=v=>{if(!v)return"";const p=v.split("-");const dt=new Date(+p[0],+p[1]-1,+p[2]);return DIAS[dt.getDay()]+" "+p[2]+"/"+p[1]+"/"+p[0]};
+const cat=(tit,c,bg,tx)=>'<div class="q-cat" style="background:'+bg+';color:'+tx+'"><i style="background:'+c+'"></i>'+tit+'</div>';
+let rows="";
+if(verTorta){
+const m=String(S.pisos||"").match(/^(\d+) tortas · (.*)$/);const cant=m?m[1]:"1";const pisosTxt=m?m[2]:S.pisos;
+const l1=jn([pisosTxt,S.porciones,has(S.relleno)?"relleno "+S.relleno:"",has(S.cobertura)?"cobertura "+S.cobertura:""]);
+const l2=jn([has(S.tematica)?"Temática: "+S.tematica:"",has(S.colores)?"colores "+S.colores:"",has(S.mensaje)?"mensaje “"+S.mensaje+"”":""]);
+const sub=[l1,l2,has(S.decoracion)?S.decoracion:""].filter(x=>x).map(x=>esc(x)).join("<br>");
+rows+=cat("Torta","#D8334F","#FBE3E7","#D8334F")+'<div class="q-r"><span class="d">'+(has(S.sabor)?"Torta "+esc(S.sabor):"Torta")+(sub?'<span class="s">'+sub+'</span>':"")+'</span><span class="n">'+(hayTorta?cant:"")+'</span><span class="n">'+(has(S.precioTorta)?money(num(S.precioTorta)):"S/")+'</span></div>'}
+grupos.forEach(g=>{const L=porG[g];rows+=cat(G[g].t,G[g].c,G[g].bg,G[g].tx);
+const n=vacio?3:L.length;for(let i=0;i<n;i++){const b=L[i];
+rows+='<div class="q-r"><span class="d">'+(b?esc(b.n):"&nbsp;")+'</span><span class="n">'+(b&&has(b.c)?esc(b.c):"")+'</span><span class="n">'+(b&&has(b.p)?money(num(b.p)):"S/")+'</span></div>'}});
 const anyTot=has(S.precioTorta)||filled.some(b=>has(b.p))||has(S.delivery);
-const Lv=(v,neg)=>has(v)?'<b class="v">'+(neg?"– ":"")+money(num(v))+'</b>':'<b>'+(neg?"– ":"")+'S/</b>';
-let tl="";
-if(verTorta)tl+='<div class="l"><span>Torta</span>'+Lv(S.precioTorta)+'</div>';
-grupos.forEach(g=>{tl+='<div class="l"><span>'+G[g].l+'</span>'+(conP(g)?'<b class="v">'+money(sumG(g))+'</b>':'<b>S/</b>')+'</div>'});
-if(has(S.delivery)||vacio)tl+='<div class="l"><span>Delivery</span>'+Lv(S.delivery)+'</div>';
-if(has(S.descuento)||vacio)tl+='<div class="l"><span>Descuento</span>'+Lv(S.descuento,true)+'</div>';
-$("sheet").innerHTML='<div class="page" style="--rh:6.7mm">'+
-'<div class="stripe"><i style="background:#D8334F"></i><i style="background:#EA7038"></i><i style="background:#E66B8C"></i><i style="background:#7A1432"></i></div>'+
-'<header><div class="lockup"><img class="mono" src="'+MONO+'" alt=""><img class="word" src="'+WORD+'" alt="Dulzú, tortas y bocaditos"></div>'+
-'<div class="doc"><h2>Cotización</h2><div class="meta"><span>Fecha</span><div class="fill">'+fmtDate(S.fecha)+'</div><span>Válida hasta</span><div class="fill">'+fmtDate(S.valida)+'</div></div></div></header>'+
-'<h3><i class="dot" style="background:#D8334F"></i>Datos del cliente</h3>'+
-'<div class="box"><div class="g2">'+
-'<div class="field"><label>Nombre</label><div class="fill">'+f(S.nombre)+'</div></div>'+
-'<div class="field"><label>WhatsApp</label><div class="fill">'+f(S.whatsapp)+'</div></div>'+
-'<div class="field"><label>Correo</label><div class="fill">'+f(S.correo)+'</div></div>'+
-'<div class="field"><label>Empresa / RUC</label><div class="fill">'+f(S.empresa)+'</div></div></div>'+
-'<div class="field"><label>Dirección</label><div class="fill">'+f(S.direccion)+'</div></div></div>'+
-secs+
-'<div class="bottom"><div class="cond"><h4>Condiciones</h4><ul>'+
-'<li>El pedido se separa con el 50% de adelanto; el saldo se cancela antes de la entrega.</li>'+
-'<li>Separa tu fecha con al menos 5 días de anticipación (tortas temáticas: 7 días).</li>'+
-'<li>El delivery se cotiza según distrito. Precios válidos hasta la fecha indicada.</li></ul>'+
-'<div class="obs"><b>Observaciones</b><div class="lined">'+lines(2,6)+'<p>'+f(S.obs)+'</p></div></div></div>'+
-'<div class="totals">'+tl+
-'<div class="total"><span>Total</span><b>'+(anyTot?money(t):"S/")+'</b></div>'+
-'<div class="igv">'+(anyTot?"Incluye IGV (18%): "+money(t-t/1.18):"Precios incluyen IGV (18%)")+'</div></div></div>'+
-'<footer><div class="c"><span><b>@dulzu.pe</b></span><span>WhatsApp <b>939 822 834</b></span></div>'+
-'<span class="thanks">¡Gracias por endulzar tu celebración con nosotros!</span><img src="'+MONO+'" alt=""></footer></div>';
-/* si el pedido es largo, las filas de las tablas se achican hasta que todo entre en la hoja A4 */
-const page=$("sheet").querySelector(".page");const no=()=>page.scrollHeight>page.clientHeight+1;let rh=6.7;
-while(no()&&rh>5.05){rh-=0.2;page.style.setProperty("--rh",rh.toFixed(1)+"mm")}
-if(no()){page.classList.add("compacto");rh=6.7;page.style.setProperty("--rh","6.7mm");while(no()&&rh>4.45){rh-=0.2;page.style.setProperty("--rh",rh.toFixed(1)+"mm")}}
+let tl="";const L1=(a,v)=>'<div class="q-l"><span>'+a+'</span><b>'+v+'</b></div>';
+if(verTorta)tl+=L1("Torta",has(S.precioTorta)?money(num(S.precioTorta)):"S/");
+grupos.forEach(g=>{tl+=L1(G[g].t,conP(g)?money(sumG(g)):"S/")});
+if(has(S.delivery))tl+=L1("Delivery",money(num(S.delivery)));
+if(has(S.descuento))tl+=L1("Descuento","– "+money(num(S.descuento)));
+const contacto=jn([has(S.whatsapp)?"WhatsApp "+S.whatsapp:"",S.correo,S.empresa,S.direccion]);
+$("sheet").innerHTML='<div class="page q">'+
+'<div class="q-stripe"><i style="background:#D8334F"></i><i style="background:#EA7038"></i><i style="background:#E66B8C"></i><i style="background:#7A1432"></i></div>'+
+'<div class="q-head"><div class="q-lock"><img class="m" src="monograma.svg" alt=""><img class="w" src="'+WORD+'" alt="Dulzú, tortas y bocaditos"></div>'+
+'<div class="q-doc"><div class="q-tit">Cotización</div><div class="q-meta"><span>Fecha</span><b>'+fmtDate(S.fecha)+'</b>'+(has(S.entrega)?'<span>Entrega</span><b>'+fmtEnt(S.entrega)+'</b>':"")+'<span class="q-val">Válida por 30 días</span></div></div></div>'+
+'<div class="q-para"><div class="q-lbl">Para</div><div class="q-nom">'+(has(S.nombre)?esc(S.nombre):"&nbsp;")+'</div>'+(contacto?'<div class="q-con">'+esc(contacto)+'</div>':"")+'</div>'+
+'<div class="q-tab"><div class="q-th"><span>Detalle del pedido</span><span>Cant.</span><span>Precio</span></div>'+rows+'</div>'+
+'<div class="q-res"><div class="q-cond"><div class="h">Condiciones</div>'+
+'<div class="li">El pedido se separa con el 50% de adelanto; el saldo se cancela antes de la entrega.</div>'+
+'<div class="li">Separa tu fecha con al menos 5 días de anticipación (tortas temáticas: 7 días).</div>'+
+'<div class="li">El delivery se cotiza según distrito. Precios válidos por 30 días desde la fecha de la cotización.</div>'+
+(has(S.obs)?'<div class="ob"><b>Observaciones:</b> '+esc(S.obs)+'</div>':"")+'</div>'+
+'<div class="q-tot">'+tl+'<div class="q-t"><span>Total</span><b>'+(anyTot?money(t):"S/")+'</b></div><div class="q-igv">Incluye IGV (18%)</div></div></div>'+
+'<div class="q-pie"><span class="g">¡Gracias por endulzar tu celebración con nosotros!</span><img src="monograma.svg" alt=""></div></div>';
+const page=$("sheet").querySelector(".page");const no=()=>page.scrollHeight>page.clientHeight+1;
+if(no())page.classList.add("c1");if(no())page.classList.add("c2");
 }
 function update(){const {tb,t}=totals();$("sum-boca").textContent=money(tb);$("sum-total").textContent=money(t);$("sum-igv").textContent=money(t-t/1.18);renderSheet();save();}
 
