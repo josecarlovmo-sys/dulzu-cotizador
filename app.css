@@ -1,0 +1,62 @@
+/* Herramientas Dulzú · estilo común de la app (31/10/2026)
+   Hace que Hoja, Boleta, Registro, Negocio y Carta se vean igual que el cotizador:
+   fondo blanco, encabezado con flecha + monograma + título, campos de 48 px, botones vino. */
+:root,:root[data-theme="dark"]{--bg:#FFFFFF;--card:#FFFFFF;--ink:#3F2B26;--muted:#6F5036;--line:#EADBCF;--field:#FFFFFF;
+  --accent:#7A1432;--on-accent:#FFFFFF;--vino:#7A1432;--coral:#D8334F;--durazno:#C85A26;--focus:#E66B8C;--stage:#FBF4E8;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#FFFFFF;--card:#FFFFFF;--ink:#3F2B26;--muted:#6F5036;--line:#EADBCF;
+  --field:#FFFFFF;--accent:#7A1432;--on-accent:#FFFFFF;--coral:#D8334F;--durazno:#C85A26;--focus:#E66B8C;--stage:#FBF4E8;
+  --ok:#2E6B3F;--ok-bg:#E4F1E6;--warn:#8A4B06;--warn-bg:#FCEBD4;color-scheme:light}}
+body.dz{background:#FFFFFF!important;color:#3F2B26;font-family:'Jost','Avenir Next','Segoe UI',system-ui,sans-serif;font-size:16px;-webkit-tap-highlight-color:transparent}
+
+/* Encabezado igual al del cotizador */
+.dz-top{position:sticky;top:0;z-index:40;background:#FFFFFF;border-bottom:1px solid #EADBCF;padding:calc(8px + env(safe-area-inset-top,0px)) 16px 10px}
+.dz-top-in{display:flex;align-items:center;gap:8px;max-width:1180px;margin:0 auto}
+.dz-atras{width:44px;height:44px;margin-left:-10px;display:flex;align-items:center;justify-content:center;color:#7A1432;border-radius:12px;flex:none}
+.dz-atras:active{background:#FBF4E8}
+.dz-top img{width:48px;height:48px;flex:none;display:block}
+.dz-tit{font-family:'Fraunces',Georgia,serif;font-weight:400;font-size:21px;color:#7A1432;margin:0 0 0 4px;line-height:1.2}
+.dz .dz-back{display:none!important}
+.dz .top>img,.dz .top>div:not(.actions){display:none}
+.dz .top{margin-bottom:6px}
+.dz .wrap>h1,.dz .wrap>.sub:not(#sub){display:none}
+.dz .wrap{padding-top:14px}
+
+/* Tarjetas y títulos */
+.dz fieldset,.dz .card,.dz .tile{border:1px solid #EADBCF;border-radius:16px;background:#FFFFFF}
+.dz legend,.dz .card h2,.dz h2{font-family:'Fraunces',Georgia,serif;font-weight:400;color:#7A1432}
+.dz legend{font-size:21px}
+
+/* Etiquetas y campos (16 px para que el teléfono no haga zoom) */
+.dz label{font-size:14px;font-weight:500;letter-spacing:0;text-transform:none;color:#6F5036}
+.dz label.chk,.dz .radios label{color:#3F2B26;font-weight:400;font-size:15px}
+.dz input:not([type=checkbox]):not([type=radio]):not([type=file]),.dz select,.dz textarea{font-size:16px;border:1px solid #EADBCF;border-radius:12px;background:#FFFFFF;color:#3F2B26;min-height:48px;padding:0 14px}
+.dz textarea{padding:12px 14px}
+.dz input:focus,.dz select:focus,.dz textarea:focus{border-color:#7A1432;outline:none}
+.dz .money input{padding-left:32px!important}
+.dz .it input,.dz .boca input,.dz #items input,.dz #items select{padding:0 8px!important;min-height:44px}
+.dz input[type=checkbox],.dz input[type=radio]{accent-color:#7A1432;width:20px;height:20px}
+
+/* Botones: principal vino, secundario con borde vino */
+.dz button,.dz .btn,.dz .bar a{border-radius:14px;min-height:48px;font-weight:500;font-size:15px}
+.dz button.primary,.dz .btn:not(.sec),.dz .bar a.primary{background:#7A1432;border:1px solid #7A1432;color:#FFFFFF}
+.dz button:not(.primary):not(.icon):not(.x):not([role=tab]),.dz .btn.sec,.dz .bar a:not(.primary){background:#FFFFFF;border:1px solid #7A1432;color:#7A1432}
+.dz button.icon,.dz button.x{min-height:0;border:0!important;background:none!important;color:#9C8576}
+.dz button:active,.dz .btn:active{transform:scale(.98)}
+.dz button:disabled,.dz .btn:disabled{opacity:.45}
+
+/* Pestañas como las del cotizador */
+.dz .tabs{display:flex;background:#FBF4E8;border-radius:12px;padding:4px;gap:0;flex-wrap:nowrap}
+.dz .tabs button{border:0!important;background:none!important;color:#6F5036!important;border-radius:9px;min-height:40px;font-size:15px;flex:1}
+.dz .tabs button[aria-selected=true]{background:#FFFFFF!important;color:#7A1432!important;box-shadow:0 1px 2px rgba(63,43,38,.12)}
+
+/* Zonas para subir archivos y vistas previas */
+.dz .drop{border:1px dashed #EA7038;border-radius:16px;background:#FFFFFF}
+.dz .drop b{font-family:'Fraunces',Georgia,serif;font-weight:400;color:#7A1432}
+.dz .stage{background:#FBF4E8;border-radius:16px}
+
+/* Indicadores y tablas */
+.dz .kpi{background:#FBF4E8;border-radius:12px}
+.dz .kpi.big,.dz .tile.hero{background:#7A1432;border-color:#7A1432}
+.dz th{color:#6F5036;text-transform:none;letter-spacing:0;font-size:13px}
+.dz .bar{position:static;border-bottom:0}
+.dz .calc,.dz .scan{background:#FBF4E8}
