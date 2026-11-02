@@ -216,7 +216,8 @@
         (S.cargada.avisos && S.cargada.avisos.length ? '<ul style="margin:6px 0 0;padding-left:18px">' + S.cargada.avisos.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '') +
         '<div><button type="button" class="volver" data-a="cerrarCargada" style="color:var(--verde)">Entendido</button></div></div>';
     }
-    h += '<label class="lbl" for="cliente" style="margin-top:6px">Cliente o pedido</label>' +
+    h += '<div class="fila-cli"><label class="lbl" for="cliente">Cliente o pedido</label>' +
+      '<button type="button" class="borrar" data-a="borrarTodo"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>Nueva cotización</button></div>' +
       '<input class="input" id="cliente" data-in="cliente" autocomplete="off" placeholder="Ej. María · cumpleaños 20 personas" value="' + esc(S.cliente) + '">';
     h += htmlTorta();
     h += htmlProductos();
@@ -694,6 +695,7 @@
     if (b.getAttribute('data-d')) { mover(a, d, b); return; }
     switch (a) {
       case 'ir': irA(v); break;
+      case 'borrarTodo': borrarTodo(); break;
       case 'conTorta': S.conTorta = !S.conTorta; cambio(true); break;
       case 'elegirSabor':
         abrirHoja('Sabor', CAT.init.sabores.map(function (s) { return { v: s, label: s }; }), i < 0 ? S.sabor : S.pisos[i].sabor, function (val) {
@@ -893,6 +895,14 @@
     return d;
   }
 
+  // Borra todo de un toque y empieza de cero; se puede deshacer durante unos segundos
+  function borrarTodo() {
+    var antes = copia(S);
+    S = nuevaCotizacion(); ui.vista = 'armar'; ui.abiertos = {}; ui.q = ''; ui.cat = 'todos';
+    recalcular(); render(); window.scrollTo(0, 0);
+    toast('Cotización borrada', 6000, { txt: 'Deshacer', fn: function () { S = antes; recalcular(); render(); } });
+  }
+
   function irA(v) {
     if (v === 'cotizar') { location.hash = 'cotizar'; return; }
     if (v === 'hoja') { location.href = 'hoja.html'; return; }
@@ -916,7 +926,7 @@
       { v: 'cat', label: 'Actualizar precios desde la hoja', sub: leido ? 'leídos ' + leido.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }) : '' },
       { v: 'nueva', label: 'Empezar cotización nueva' }
     ], '', function (v) {
-      if (v === 'nueva') { S = nuevaCotizacion(); ui.vista = 'armar'; ui.tab = 'cotizar'; recalcular(); render(); }
+      if (v === 'nueva') borrarTodo();
       if (v === 'cat') {
         toast('Actualizando precios…', 9000);
         bajarCatalogo().then(function (c) { recalcular(); render(); toast(c ? 'Precios actualizados desde la hoja' : 'Los precios ya estaban al día'); })
